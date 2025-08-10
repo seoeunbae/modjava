@@ -1,6 +1,6 @@
 # modjava
 
-## Journal
+## Set up
 ```log
 git clone https://github.com/andrewaddo/modjava
 git clone https://github.com/shashirajraja/shopping-cart
@@ -78,4 +78,15 @@ sudo systemctl start tomcat
 sudo chown tomcat.tomcat /usr/local/tomcat/webapps -R
 
 sudo vi /usr/local/tomcat/conf/server.xml # change the default port 8080 to 8082
+```
+
+## Logs
+
+```logs
+1. Choosing a base project: out objective is to find a legacy Java app that is
+   1. J2EE, not yet Spring boot'ed
+   2. 3-tier app with JSP, J2EE, MySQL with tightly coupled frontend-backend-db integration
+2. Selection process
+   a. Ideally we could get a customer's project, but due to IP protection, this is not feasible for a public facing project.
+   b. More common apps such as Online Boutique, Cymbal or Pet Clinic were either not Java based (e.g. .NET) or too modernized (e.g. already in Spring boot framework or is already micro-services architectured)
 ```

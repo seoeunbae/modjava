@@ -63,6 +63,30 @@ sudo systemctl stop mysqld
 # Test the app GUI, on the browser, with the newly migrated DB
 ```
 
+## Assessment with go/codmod
+
+```bash
+https://storage.googleapis.com/codmod-release/userguide.pdf
+
+version=$(curl -s https://codmod-release.storage.googleapis.com/latest)
+curl -O "https://codmod-release.storage.googleapis.com/${version}/linux/amd64/codmod"
+chmod +x codmod
+
+gcloud services enable aiplatform.googleapis.com --project $PROJECT_ID
+PROJECT_ID=addo-argolis-demo
+./codmod config set project $PROJECT_ID
+# check the available region https://cloud.google.com/vertex-ai/generative-ai/docs/learn/locations#united-states
+REGION=us-central1
+./codmod config set region $REGION
+./codmod create -c ./shopping-cart/ -o ./mod1.out/modjava_codmod.html
+```
+
+## TODO
+
+```bash
+Test with go/codmod and use it as input to Phase 2
+```
+
 ## References
 
 ```logs
