@@ -3,41 +3,28 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.example</groupId>
+        <groupId>com.example.shoppingcart</groupId>
         <artifactId>shopping-cart-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>integration-tests</artifactId>
-    <packaging>jar</packaging>
-
     <name>integration-tests</name>
 
-    <properties>
-        <spring-boot.version>2.7.14</spring-boot.version>
-        <testcontainers.version>1.19.7</testcontainers.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers-bom</artifactId>
-                <version>${testcontainers.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
+        <dependency>
+            <groupId>com.example.shoppingcart</groupId>
+            <artifactId>web-app</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.example.shoppingcart</groupId>
+            <artifactId>data-access</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -70,7 +57,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.example</groupId>
+            <groupId>com.example.shoppingcart</groupId>
             <artifactId>web-app</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
