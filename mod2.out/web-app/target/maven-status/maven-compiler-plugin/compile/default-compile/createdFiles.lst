@@ -1,4 +1,6 @@
+com/example/shoppingcart/service/ProductService.class
 com/example/shoppingcart/controller/UserController.class
 com/example/shoppingcart/config/SecurityConfig.class
 com/example/shoppingcart/service/CustomUserDetailsService.class
+com/example/shoppingcart/controller/ProductController.class
 com/example/shoppingcart/service/UserService.class

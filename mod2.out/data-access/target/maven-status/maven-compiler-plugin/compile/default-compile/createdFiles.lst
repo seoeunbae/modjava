@@ -1,2 +1,4 @@
-com/example/shoppingcart/dataaccess/user/User.class
+com/example/shoppingcart/dataaccess/product/Product.class
 com/example/shoppingcart/dataaccess/user/UserRepository.class
+com/example/shoppingcart/dataaccess/product/ProductRepository.class
+com/example/shoppingcart/dataaccess/user/User.class
