@@ -1,1 +1,4 @@
-mcdc*
+mcdc
+codmod
+mod2.out/integration-tests/target/
+spring-boot-app.log

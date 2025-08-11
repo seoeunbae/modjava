@@ -5,6 +5,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -13,8 +15,13 @@ import org.testcontainers.containers.BrowserWebDriverContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.OutputType;
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.apache.commons.io.FileUtils;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,39 +51,52 @@ public class UserJourneyIT {
     public void testUserJourney() {
         WebDriver driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new org.openqa.selenium.chrome.ChromeOptions());
 
-        driver.get("http://host.testcontainers.internal:" + port);
+        try {
+            driver.get("http://10.148.0.22:" + port + "/register");
 
-        // Registration
-        driver.findElement(By.linkText("Register")).click();
-        driver.findElement(By.id("name")).sendKeys("Test User");
-        driver.findElement(By.id("email")).sendKeys("test@example.com");
-        driver.findElement(By.id("mobile")).sendKeys("1234567890");
-        driver.findElement(By.id("address")).sendKeys("123 Test Street");
-        driver.findElement(By.id("pincode")).sendKeys("12345");
-        driver.findElement(By.id("password")).sendKeys("password");
-        driver.findElement(By.id("register-btn")).click();
+            // Wait for the "name" input field to be present
+            new WebDriverWait(driver, Duration.ofSeconds(30)).until(ExpectedConditions.presenceOfElementLocated(By.id("first_name")));
 
-        // Login
-        driver.findElement(By.id("email")).sendKeys("test@example.com");
-        driver.findElement(By.id("password")).sendKeys("password");
-        driver.findElement(By.id("login-btn")).click();
+            // Registration
+            driver.findElement(By.id("first_name")).sendKeys("Test User");
+            driver.findElement(By.id("email")).sendKeys("test@example.com");
+            driver.findElement(By.id("mobile")).sendKeys("1234567890");
+            driver.findElement(By.id("address")).sendKeys("123 Test Street");
+            driver.findElement(By.id("pincode")).sendKeys("12345");
+            driver.findElement(By.id("password")).sendKeys("password");
+            driver.findElement(By.id("register-btn")).click();
 
-        // Add to cart
-        driver.findElement(By.linkText("Add to Cart")).click();
+            // Login
+            driver.findElement(By.id("email")).sendKeys("test@example.com");
+            driver.findElement(By.id("password")).sendKeys("password");
+            driver.findElement(By.id("login-btn")).click();
 
-        // View cart
-        driver.findElement(By.linkText("Cart")).click();
-        WebElement productInCart = driver.findElement(By.xpath("//td[contains(text(), 'Test Product')]"));
-        assertEquals("Test Product", productInCart.getText());
+            // Add to cart
+            driver.findElement(By.linkText("Add to Cart")).click();
 
-        // Place order
-        driver.findElement(By.linkText("Place Order")).click();
+            // View cart
+            driver.findElement(By.linkText("Cart")).click();
+            WebElement productInCart = driver.findElement(By.xpath("//td[contains(text(), 'Test Product')]"));
+            assertEquals("Test Product", productInCart.getText());
 
-        // Verify order
-        driver.findElement(By.linkText("My Orders")).click();
-        WebElement orderProduct = driver.findElement(By.xpath("//td[contains(text(), 'Test Product')]"));
-        assertEquals("Test Product", orderProduct.getText());
+            // Place order
+            driver.findElement(By.linkText("Place Order")).click();
 
-        driver.quit();
+            // Verify order
+            driver.findElement(By.linkText("My Orders")).click();
+            WebElement orderProduct = driver.findElement(By.xpath("//td[contains(text(), 'Test Product')]"));
+            assertEquals("Test Product", orderProduct.getText());
+        } catch (Exception e) {
+            // Take screenshot on failure
+            File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            try {
+                FileUtils.copyFile(screenshot, new File("target/surefire-reports/failure-screenshot.png"));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            throw e; // Re-throw the exception to mark the test as failed
+        } finally {
+            driver.quit();
+        }
     }
 }
