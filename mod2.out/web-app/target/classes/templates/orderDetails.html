@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Details</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/changes.css">
+</head>
+<body>
+<div class="container">
+    <h2>Order Details</h2>
+
+    <div th:if="${order == null}">
+        <p>Order not found.</p>
+    </div>
+
+    <div th:if="${order != null}">
+        <p><strong>Order ID:</strong> <span th:text="${order.id}"></span></p>
+        <p><strong>Order Date:</strong> <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+        <p><strong>Total Amount:</strong> <span th:text="${order.totalAmount}"></span></p>
+        <p><strong>Status:</strong> <span th:text="${order.shipped == 0 ? 'Processing' : 'Shipped'}"></span></p>
+
+        <h3>Items in this Order:</h3>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price at Purchase</th>
+                <th>Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${order.orderItems}">
+                <td th:text="${item.product.prodName}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${item.priceAtPurchase}"></td>
+                <td th:text="${item.quantity * item.priceAtPurchase}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p class="mt-3"><a href="/orders/history">Back to Order History</a></p>
+</div>
+</body>
+</html>

@@ -1,8 +1,12 @@
 com/example/shoppingcart/dataaccess/cart/CartItem.class
+com/example/shoppingcart/dataaccess/order/OrderItemRepository.class
 com/example/shoppingcart/dataaccess/user/UserRepository.class
 com/example/shoppingcart/dataaccess/product/ProductRepository.class
+com/example/shoppingcart/dataaccess/order/OrderRepository.class
 com/example/shoppingcart/dataaccess/cart/Cart.class
 com/example/shoppingcart/dataaccess/cart/CartRepository.class
+com/example/shoppingcart/dataaccess/order/OrderItem.class
 com/example/shoppingcart/dataaccess/cart/CartItemRepository.class
 com/example/shoppingcart/dataaccess/product/Product.class
+com/example/shoppingcart/dataaccess/order/Order.class
 com/example/shoppingcart/dataaccess/user/User.class

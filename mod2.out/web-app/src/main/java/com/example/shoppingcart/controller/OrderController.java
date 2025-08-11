@@ -1,0 +1,55 @@
+package com.example.shoppingcart.controller;
+
+import com.example.shoppingcart.dataaccess.order.Order;
+import com.example.shoppingcart.service.OrderService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/orders")
+public class OrderController {
+
+    private final OrderService orderService;
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @PostMapping("/place")
+    public String placeOrder(Principal principal) {
+        String userEmail = principal.getName();
+        orderService.placeOrder(userEmail);
+        return "redirect:/orders/history";
+    }
+
+    @GetMapping("/history")
+    public String viewOrderHistory(Model model, Principal principal) {
+        String userEmail = principal.getName();
+        List<Order> orders = orderService.getOrdersByUser(userEmail);
+        model.addAttribute("orders", orders);
+        return "orderHistory";
+    }
+
+    @GetMapping("/{orderId}")
+    public String viewOrderDetails(@PathVariable Long orderId, Model model) {
+        Optional<Order> order = orderService.getOrderById(orderId);
+        if (order.isPresent()) {
+            model.addAttribute("order", order.get());
+            return "orderDetails";
+        } else {
+            return "error"; // Or a custom not found page
+        }
+    }
+
+    // Admin functionality to update order status
+    @PostMapping("/updateStatus")
+    public String updateOrderStatus(@RequestParam("orderId") Long orderId, @RequestParam("shipped") int shipped) {
+        orderService.updateOrderStatus(orderId, shipped);
+        return "redirect:/admin/orders"; // Redirect to admin orders view
+    }
+}
