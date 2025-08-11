@@ -25,7 +25,7 @@ public class Product {
     private int prodQuantity;
 
     @Lob
-    @Column(name = "prod_image", columnDefinition="BLOB")
+    @Column(name = "prod_image")
     private byte[] prodImage;
 
     // Constructors

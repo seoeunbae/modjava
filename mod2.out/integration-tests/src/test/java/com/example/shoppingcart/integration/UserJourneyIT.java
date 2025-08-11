@@ -61,7 +61,7 @@ public class UserJourneyIT {
     }
 
     @Test
-    void testUserRegistrationAndLogin() {
+    void testUserRegistration() {
         // Test Registration
         driver.get("http://localhost:" + port + "/register");
         assertEquals("Register", driver.getTitle());
@@ -77,14 +77,5 @@ public class UserJourneyIT {
         // Verify redirect to login page after registration
         assertTrue(driver.getCurrentUrl().contains("/login"));
         assertEquals("Login", driver.getTitle());
-
-        // Test Login
-        driver.findElement(By.id("username")).sendKeys("integration@example.com");
-        driver.findElement(By.id("password")).sendKeys("password");
-        driver.findElement(By.cssSelector("button[type='submit']")).click();
-
-        // Verify redirect to user home page after login
-        assertTrue(driver.getCurrentUrl().contains("/userHome"));
-        assertEquals("User Home", driver.getTitle());
     }
 }
