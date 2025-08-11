@@ -4,6 +4,7 @@
 /home/ducdo/workspace/modjava/mod2.out/web-app/src/main/java/com/example/shoppingcart/controller/OrderController.java
 /home/ducdo/workspace/modjava/mod2.out/web-app/src/main/java/com/example/shoppingcart/controller/ProductController.java
 /home/ducdo/workspace/modjava/mod2.out/web-app/src/main/java/com/example/shoppingcart/controller/UserController.java
+/home/ducdo/workspace/modjava/mod2.out/web-app/src/main/java/com/example/shoppingcart/controller/WebController.java
 /home/ducdo/workspace/modjava/mod2.out/web-app/src/main/java/com/example/shoppingcart/service/CartService.java
 /home/ducdo/workspace/modjava/mod2.out/web-app/src/main/java/com/example/shoppingcart/service/CustomUserDetailsService.java
 /home/ducdo/workspace/modjava/mod2.out/web-app/src/main/java/com/example/shoppingcart/service/OrderService.java
