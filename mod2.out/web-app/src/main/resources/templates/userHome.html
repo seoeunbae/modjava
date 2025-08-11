@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Home</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/changes.css">
+</head>
+<body>
+<div class="container">
+    <h2>Welcome to your Home Page!</h2>
+    <p>This is a placeholder for the user's home content.</p>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
+</div>
+</body>
+</html>

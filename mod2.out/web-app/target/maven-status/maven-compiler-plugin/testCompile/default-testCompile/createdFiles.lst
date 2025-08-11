@@ -1,4 +1,1 @@
-com/example/shoppingcart/service/OrderServiceImplTest.class
-com/example/shoppingcart/service/CartServiceImplTest.class
-com/example/shoppingcart/service/UserServiceImplTest.class
-com/example/shoppingcart/service/ProductServiceImplTest.class
+com/example/shoppingcart/service/UserServiceTest.class
