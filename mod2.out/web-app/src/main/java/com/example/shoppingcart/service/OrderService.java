@@ -1,13 +1,13 @@
 package com.example.shoppingcart.service;
 
-import com.example.shoppingcart.dataaccess.cart.Cart;
-import com.example.shoppingcart.dataaccess.cart.CartItem;
-import com.example.shoppingcart.dataaccess.order.Order;
-import com.example.shoppingcart.dataaccess.order.OrderItem;
-import com.example.shoppingcart.dataaccess.order.OrderItemRepository;
-import com.example.shoppingcart.dataaccess.order.OrderRepository;
-import com.example.shoppingcart.dataaccess.product.Product;
-import com.example.shoppingcart.dataaccess.user.User;
+import com.example.shoppingcart.model.Cart;
+import com.example.shoppingcart.model.CartItem;
+import com.example.shoppingcart.model.Order;
+import com.example.shoppingcart.model.OrderItem;
+import com.example.shoppingcart.repository.OrderItemRepository;
+import com.example.shoppingcart.repository.OrderRepository;
+import com.example.shoppingcart.model.Product;
+import com.example.shoppingcart.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

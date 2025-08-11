@@ -1,4 +1,5 @@
 com/example/shoppingcart/service/OrderServiceTest.class
+com/example/shoppingcart/controller/UserControllerTest.class
 com/example/shoppingcart/service/CartServiceTest.class
 com/example/shoppingcart/service/ProductServiceTest.class
 com/example/shoppingcart/service/UserServiceTest.class

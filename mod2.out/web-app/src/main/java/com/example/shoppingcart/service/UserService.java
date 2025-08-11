@@ -1,23 +1,21 @@
 package com.example.shoppingcart.service;
 
-import com.example.shoppingcart.dataaccess.user.User;
-import com.example.shoppingcart.dataaccess.user.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.example.shoppingcart.model.User;
+import com.example.shoppingcart.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public User registerNewUser(User user) {
-        // Encode the password before saving
+    public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -27,10 +25,8 @@ public class UserService {
     }
 
     public boolean authenticateUser(String email, String password) {
-        User user = findByEmail(email);
-        if (user != null) {
-            return passwordEncoder.matches(password, user.getPassword());
-        }
-        return false;
+        return userRepository.findByEmail(email)
+                .map(user -> passwordEncoder.matches(password, user.getPassword()))
+                .orElse(false);
     }
 }

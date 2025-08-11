@@ -1,6 +1,6 @@
 package com.example.shoppingcart.controller;
 
-import com.example.shoppingcart.dataaccess.order.Order;
+import com.example.shoppingcart.model.Order;
 import com.example.shoppingcart.service.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -7,9 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.example.shoppingcart", "com.example.shoppingcart.dataaccess"})
-@EntityScan(basePackages = {"com.example.shoppingcart.dataaccess.user", "com.example.shoppingcart.dataaccess.product", "com.example.shoppingcart.dataaccess.cart", "com.example.shoppingcart.dataaccess.order"})
-@EnableJpaRepositories(basePackages = {"com.example.shoppingcart.dataaccess.user", "com.example.shoppingcart.dataaccess.product", "com.example.shoppingcart.dataaccess.cart", "com.example.shoppingcart.dataaccess.order"})
+@ComponentScan(basePackages = {"com.example.shoppingcart"})
+@EntityScan(basePackages = {"com.example.shoppingcart.model"})
+@EnableJpaRepositories(basePackages = {"com.example.shoppingcart.repository"})
 public class ShoppingCartApplication {
 
     public static void main(String[] args) {

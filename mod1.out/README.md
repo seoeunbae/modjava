@@ -59,6 +59,7 @@ sudo cp target/shopping-cart-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.w
 sudo systemctl restart tomcat
 
 sudo systemctl stop mysqld
+sudo systemctl disable mysqld
 
 # Test the app GUI, on the browser, with the newly migrated DB
 ```

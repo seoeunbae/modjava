@@ -1,11 +1,11 @@
 package com.example.shoppingcart.service;
 
-import com.example.shoppingcart.dataaccess.cart.Cart;
-import com.example.shoppingcart.dataaccess.cart.CartItem;
-import com.example.shoppingcart.dataaccess.cart.CartItemRepository;
-import com.example.shoppingcart.dataaccess.cart.CartRepository;
-import com.example.shoppingcart.dataaccess.product.Product;
-import com.example.shoppingcart.dataaccess.user.User;
+import com.example.shoppingcart.model.Cart;
+import com.example.shoppingcart.model.CartItem;
+import com.example.shoppingcart.repository.CartItemRepository;
+import com.example.shoppingcart.repository.CartRepository;
+import com.example.shoppingcart.model.Product;
+import com.example.shoppingcart.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -46,7 +46,7 @@ public class CartServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        testUser = new User("Test User", 1234567890L, "test@example.com", "123 Test St", 12345, "password");
+        testUser = new User("Test User", "test@example.com", "password", "1234567890", "123 Test St", "12345");
         testUser.setId(1L);
 
         testProduct = new Product("P001", "Laptop", "Electronics", "Powerful laptop", 1200.00, 10, null);

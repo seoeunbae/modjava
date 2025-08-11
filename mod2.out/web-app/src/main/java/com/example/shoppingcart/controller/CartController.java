@@ -1,9 +1,9 @@
 package com.example.shoppingcart.controller;
 
-import com.example.shoppingcart.dataaccess.cart.Cart;
-import com.example.shoppingcart.dataaccess.cart.CartItem;
-import com.example.shoppingcart.dataaccess.product.Product;
-import com.example.shoppingcart.dataaccess.user.User;
+import com.example.shoppingcart.model.Cart;
+import com.example.shoppingcart.model.CartItem;
+import com.example.shoppingcart.model.Product;
+import com.example.shoppingcart.model.User;
 import com.example.shoppingcart.service.CartService;
 import com.example.shoppingcart.service.ProductService;
 import com.example.shoppingcart.service.UserService;

@@ -1,7 +1,7 @@
 package com.example.shoppingcart.service;
 
-import com.example.shoppingcart.dataaccess.product.Product;
-import com.example.shoppingcart.dataaccess.product.ProductRepository;
+import com.example.shoppingcart.model.Product;
+import com.example.shoppingcart.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
