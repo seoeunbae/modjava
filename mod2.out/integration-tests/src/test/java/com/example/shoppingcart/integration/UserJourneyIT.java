@@ -1,9 +1,10 @@
 package com.example.shoppingcart.integration;
 
 import com.example.shoppingcart.ShoppingCartApplication;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -22,16 +23,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ShoppingCartApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserJourneyIT {
 
     @LocalServerPort
     private int port;
 
-    @Container
     public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:13")
             .withDatabaseName("testdb")
             .withUsername("testuser")
             .withPassword("testpass");
+
+    static {
+        postgreSQLContainer.start();
+    }
 
     @DynamicPropertySource
     static void applyTestcontainersProperties(DynamicPropertyRegistry registry) {
@@ -42,7 +47,7 @@ public class UserJourneyIT {
 
     private WebDriver driver;
 
-    @BeforeEach
+    @BeforeAll
     void setUp() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
@@ -53,7 +58,7 @@ public class UserJourneyIT {
         driver = new ChromeDriver(options);
     }
 
-    @AfterEach
+    @AfterAll
     void tearDown() {
         if (driver != null) {
             driver.quit();
