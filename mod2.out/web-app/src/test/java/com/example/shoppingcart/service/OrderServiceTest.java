@@ -146,4 +146,34 @@ public class OrderServiceTest {
         assertEquals(1, updatedOrder.getShipped());
         verify(orderRepository, times(1)).save(order);
     }
+
+    @Test
+    void testGetAllShippedOrders() {
+        Order order1 = new Order(testUser, LocalDateTime.now(), 100.0, 1);
+        Order order2 = new Order(testUser, LocalDateTime.now(), 200.0, 1);
+        List<Order> shippedOrders = Arrays.asList(order1, order2);
+
+        when(orderRepository.findByShipped(1)).thenReturn(shippedOrders);
+
+        List<Order> result = orderService.getAllShippedOrders();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(orderRepository, times(1)).findByShipped(1);
+    }
+
+    @Test
+    void testGetAllUnshippedOrders() {
+        Order order1 = new Order(testUser, LocalDateTime.now(), 100.0, 0);
+        Order order2 = new Order(testUser, LocalDateTime.now(), 200.0, 0);
+        List<Order> unshippedOrders = Arrays.asList(order1, order2);
+
+        when(orderRepository.findByShipped(0)).thenReturn(unshippedOrders);
+
+        List<Order> result = orderService.getAllUnshippedOrders();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(orderRepository, times(1)).findByShipped(0);
+    }
 }

@@ -88,4 +88,12 @@ public class OrderService {
         order.setShipped(shippedStatus);
         return orderRepository.save(order);
     }
+
+    public List<Order> getAllShippedOrders() {
+        return orderRepository.findByShipped(1);
+    }
+
+    public List<Order> getAllUnshippedOrders() {
+        return orderRepository.findByShipped(0);
+    }
 }

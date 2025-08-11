@@ -47,9 +47,23 @@ public class OrderController {
     }
 
     // Admin functionality to update order status
-    @PostMapping("/updateStatus")
+    @PostMapping("/admin/orders/updateStatus")
     public String updateOrderStatus(@RequestParam("orderId") Long orderId, @RequestParam("shipped") int shipped) {
         orderService.updateOrderStatus(orderId, shipped);
-        return "redirect:/admin/orders"; // Redirect to admin orders view
+        return "redirect:/admin/orders/unshipped"; // Redirect to unshipped orders view after update
+    }
+
+    @GetMapping("/admin/shipped")
+    public String viewShippedOrders(Model model) {
+        List<Order> orders = orderService.getAllShippedOrders();
+        model.addAttribute("orders", orders);
+        return "adminShippedOrders";
+    }
+
+    @GetMapping("/admin/unshipped")
+    public String viewUnshippedOrders(Model model) {
+        List<Order> orders = orderService.getAllUnshippedOrders();
+        model.addAttribute("orders", orders);
+        return "adminUnshippedOrders";
     }
 }
