@@ -43,4 +43,37 @@ Filesystem      Size  Used Avail Use% Mounted on
 /dev/nvme0n1p2   20G   20G   20K 100% /
 
 --> extended the disk space to 500G
+
+Agent kept hitting the wall i.e. repeating loops. 
+Agent didn't keep his state and needed to restart from the begining. Many times the agent forgot the fixes it has done before for the same issue subsequently occured.
+
+
+```
+
+```logs
+give me a summary of what phases and sub-stages have you completed and what   │
+│    is pending                                                                    │
+╰──────────────────────────────────────────────────────────────────────────────────╯
+
+✦ Okay, here's a summary of my progress:
+
+  Phase 0: Initialization - Completed.
+  Phase 1: Legacy Application Analysis & Documentation - Completed.
+  Phase 2: Solution Scaffolding - Completed.
+  Phase 3: Feature Migration with Unit Tests - Completed (user management, core
+  business logic, unit tests).
+
+  Phase 4: End-to-End Verification with Integration Tests - In Progress.
+   * Completed: Implemented Selenium integration tests for user registration/login
+     and admin product management (add, edit, delete).
+   * Current Focus: Debugging persistent compilation and runtime errors in these
+     integration tests, specifically related to Testcontainers and Spring context
+     loading. I've attempted various fixes, including credential corrections, user
+     role integration, custom authentication handling, programmatic Testcontainers
+     setup, and Maven configuration adjustments.
+   * Pending: Successfully passing all integration tests. Then, migrating remaining
+     features (shopping cart, order processing, email notifications) and writing
+     their corresponding integration tests.
+
+>> It took a loooong time to fix the `Testcontainers` issue, I suggested the agent to test with H2 instead.
 ```
