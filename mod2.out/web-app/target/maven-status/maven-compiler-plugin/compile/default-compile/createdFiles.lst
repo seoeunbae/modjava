@@ -7,4 +7,5 @@ com/example/shoppingcart/controller/OrderController.class
 com/example/shoppingcart/config/SecurityConfig.class
 com/example/shoppingcart/service/CustomUserDetailsService.class
 com/example/shoppingcart/controller/ProductController.class
+com/example/shoppingcart/ShoppingCartApplication.class
 com/example/shoppingcart/service/UserService.class

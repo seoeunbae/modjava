@@ -40,6 +40,12 @@
             <version>4.22.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.8.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -69,6 +75,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${project.basedir}/../web-app/target/classes</additionalClasspathElement>
+                    </additionalClasspathElements>
+                </configuration>
             </plugin>
         </plugins>
     </build>

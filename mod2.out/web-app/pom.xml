@@ -52,6 +52,15 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.example.shoppingcart.ShoppingCartApplication</mainClass>
+                    <includes>
+                        <include>
+                            <groupId>com.example.shoppingcart</groupId>
+                            <artifactId>web-app</artifactId>
+                        </include>
+                    </includes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
