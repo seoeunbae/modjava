@@ -6,6 +6,8 @@ import com.example.shoppingcart.repository.CartItemRepository;
 import com.example.shoppingcart.repository.CartRepository;
 import com.example.shoppingcart.model.Product;
 import com.example.shoppingcart.model.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

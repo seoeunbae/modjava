@@ -4,6 +4,8 @@ import com.example.shoppingcart.model.Cart;
 import com.example.shoppingcart.model.Product;
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "cart_items")
 public class CartItem {
@@ -14,6 +16,7 @@ public class CartItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
+    @JsonBackReference
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -7,16 +7,16 @@ import com.example.shoppingcart.model.User;
 import com.example.shoppingcart.service.CartService;
 import com.example.shoppingcart.service.ProductService;
 import com.example.shoppingcart.service.UserService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
-@Controller
-@RequestMapping("/cart")
+import org.springframework.http.ResponseEntity;
+
+@RestController
+@RequestMapping("/api/cart")
 public class CartController {
 
     private final CartService cartService;
@@ -30,38 +30,37 @@ public class CartController {
     }
 
     @GetMapping
-    public String viewCart(Model model, Principal principal) {
+    public ResponseEntity<Cart> viewCart(Principal principal) {
         String userEmail = principal.getName();
         Cart cart = cartService.getCartByUser(userEmail);
-        model.addAttribute("cart", cart);
-        return "cartDetails";
+        return ResponseEntity.ok(cart);
     }
 
     @PostMapping("/add")
-    public String addItemToCart(@RequestParam("prodId") String prodId, @RequestParam("quantity") int quantity, Principal principal) {
+    public ResponseEntity<Void> addItemToCart(@RequestParam("prodId") String prodId, @RequestParam("quantity") int quantity, Principal principal) {
         String userEmail = principal.getName();
         cartService.addItemToCart(userEmail, prodId, quantity);
-        return "redirect:/cart";
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/update")
-    public String updateCartItemQuantity(@RequestParam("prodId") String prodId, @RequestParam("quantity") int quantity, Principal principal) {
+    public ResponseEntity<Void> updateCartItemQuantity(@RequestParam("prodId") String prodId, @RequestParam("quantity") int quantity, Principal principal) {
         String userEmail = principal.getName();
         cartService.updateCartItemQuantity(userEmail, prodId, quantity);
-        return "redirect:/cart";
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/remove")
-    public String removeCartItem(@RequestParam("prodId") String prodId, Principal principal) {
+    public ResponseEntity<Void> removeCartItem(@RequestParam("prodId") String prodId, Principal principal) {
         String userEmail = principal.getName();
         cartService.removeCartItem(userEmail, prodId);
-        return "redirect:/cart";
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/clear")
-    public String clearCart(Principal principal) {
+    public ResponseEntity<Void> clearCart(Principal principal) {
         String userEmail = principal.getName();
         cartService.clearCart(userEmail);
-        return "redirect:/cart";
+        return ResponseEntity.ok().build();
     }
 }

@@ -76,4 +76,42 @@ give me a summary of what phases and sub-stages have you completed and what   â”
      their corresponding integration tests.
 
 >> It took a loooong time to fix the `Testcontainers` issue, I suggested the agent to test with H2 instead.
+
+>> It's useful to check where the agent is and what is the checkpoint to resume. Without this, the agent does not know where to resume and will re-start from the begining.
+
+"this is cool! thanks for the hard work. Can you give me an update again on your progress, which phases, stages and sub-stages you have completed and what are pending?"
+
+To run the test independently `mvn -f mod2.out/pom.xml clean install -e`
+```
+
+```logs
+Aug 12 12:01PM
+
+I've made significant progress!
+
+  Completed:
+   * Phase 0: Initialization: Branch created.
+   * Phase 1: Legacy Application Analysis & Documentation: All analysis and design
+     documentation are complete.
+   * Phase 2: Solution Scaffolding: Multi-module Spring Boot project set up.
+   * Phase 3: Feature Migration with Unit Tests:
+       * User Registration and Authentication (service, controller, unit tests)
+       * Shopping Cart operations (service layer)
+       * Order Processing (service layer)
+       * Admin Order Management (service layer)
+       * Product Management (service, controller, unit tests)
+   * Phase 4: End-to-End Verification with Integration Tests:
+       * Testcontainers and WebDriverManager setup for UserJourneyIT.
+       * User Registration IT.
+       * Admin Add Product IT.
+
+  Pending:
+   * Phase 3: Feature Migration with Unit Tests:
+       * Complete UI/controller implementation and full unit test coverage for Shopping Cart,
+         Order Processing, and Admin Order Management.
+       * Implement remaining Product Management features (update, remove) at the UI/controller
+         level and their unit tests.
+   * Phase 4: End-to-End Verification with Integration Tests:
+       * Develop integration tests for all remaining user journeys, including "User adds
+         product to cart and checks out," "Admin updates product," and "Admin removes product."
 ```

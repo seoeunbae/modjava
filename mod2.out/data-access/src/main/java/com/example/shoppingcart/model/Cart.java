@@ -4,6 +4,7 @@ import com.example.shoppingcart.model.User;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "carts")
@@ -18,6 +19,7 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<CartItem> cartItems = new HashSet<>();
 
     public Cart() {

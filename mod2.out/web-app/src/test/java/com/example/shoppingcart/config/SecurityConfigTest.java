@@ -5,17 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import com.example.shoppingcart.model.User;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -25,7 +18,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -34,23 +26,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureTestEntityManager
-@Transactional // Load full application context
 class SecurityConfigTest {
 
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private TestEntityManager entityManager;
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     private MockMvc mockMvc;
-
-    // Removed all other @MockBean for repositories and services.
-    // Spring Boot will now try to auto-configure them with H2.
 
     @BeforeEach
     void setUp() {
@@ -59,18 +46,20 @@ class SecurityConfigTest {
                 .apply(springSecurity())
                 .build();
 
-        // Insert a test user into the H2 database
-        com.example.shoppingcart.model.User user = new com.example.shoppingcart.model.User();
-        user.setEmail("testuser@example.com");
-        user.setPassword(passwordEncoder.encode("password"));
-        user.setRole("USER"); // Assuming a setRole method exists in your User entity
-        entityManager.persistAndFlush(user);
+        // Mock the CustomUserDetailsService
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername("testuser@example.com")
+                .password(passwordEncoder.encode("password"))
+                .roles("USER")
+                .build();
+        when(customUserDetailsService.loadUserByUsername("testuser@example.com")).thenReturn(userDetails);
 
-        com.example.shoppingcart.model.User admin = new com.example.shoppingcart.model.User();
-        admin.setEmail("admin@example.com");
-        admin.setPassword(passwordEncoder.encode("password"));
-        admin.setRole("ADMIN"); // Assuming a setRole method exists in your User entity
-        entityManager.persistAndFlush(admin);
+        UserDetails adminDetails = org.springframework.security.core.userdetails.User.withUsername("admin@example.com")
+                .password(passwordEncoder.encode("password"))
+                .roles("ADMIN")
+                .build();
+        when(customUserDetailsService.loadUserByUsername("admin@example.com")).thenReturn(adminDetails);
+
+        when(customUserDetailsService.loadUserByUsername("nonexistent@example.com")).thenReturn(null);
     }
 
     @Test
