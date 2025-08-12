@@ -20,6 +20,7 @@ public class User {
     private String mobile;
     private String address;
     private String pincode;
+    private String role;
 
     public User() {
     }
@@ -31,5 +32,15 @@ public class User {
         this.mobile = mobile;
         this.address = address;
         this.pincode = pincode;
+    }
+
+    public User(String name, String email, String password, String mobile, String address, String pincode, String role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.mobile = mobile;
+        this.address = address;
+        this.pincode = pincode;
+        this.role = role;
     }
 }

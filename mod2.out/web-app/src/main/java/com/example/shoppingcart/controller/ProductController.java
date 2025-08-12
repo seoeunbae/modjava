@@ -2,73 +2,60 @@ package com.example.shoppingcart.controller;
 
 import com.example.shoppingcart.model.Product;
 import com.example.shoppingcart.service.ProductService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
-@Controller
-@RequestMapping("/admin/products")
+@RestController
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
 
+    @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
-    @GetMapping("/add")
-    public String showAddProductForm(Model model) {
-        model.addAttribute("product", new Product());
-        return "addProduct";
+    @PostMapping
+    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
+        Product newProduct = productService.addProduct(product);
+        return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
 
-    @PostMapping("/add")
-    public String addProduct(@ModelAttribute("product") Product product, @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
-        if (!imageFile.isEmpty()) {
-            product.setProdImage(imageFile.getBytes());
+    @PutMapping("/{prodId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable String prodId, @RequestBody Product product) {
+        // Ensure the ID in the path matches the ID in the request body
+        if (!prodId.equals(product.getProdId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        productService.addProduct(product);
-        return "redirect:/admin/products/view";
-    }
-
-    @GetMapping("/view")
-    public String viewAllProducts(Model model) {
-        List<Product> products = productService.getAllProducts();
-        model.addAttribute("products", products);
-        return "viewProducts";
-    }
-
-    @GetMapping("/edit/{prodId}")
-    public String showEditProductForm(@PathVariable String prodId, Model model) {
-        Product product = productService.getProductById(prodId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + prodId));
-        model.addAttribute("product", product);
-        return "editProduct";
-    }
-
-    @PostMapping("/edit")
-    public String editProduct(@ModelAttribute("product") Product product, @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
-        if (!imageFile.isEmpty()) {
-            product.setProdImage(imageFile.getBytes());
+        try {
+            Product updatedProduct = productService.updateProduct(product);
+            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        productService.updateProduct(product);
-        return "redirect:/admin/products/view";
     }
 
-    @GetMapping("/delete/{prodId}")
-    public String deleteProduct(@PathVariable String prodId) {
+    @DeleteMapping("/{prodId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable String prodId) {
         productService.deleteProduct(prodId);
-        return "redirect:/admin/products/view";
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/search")
-    public String searchProducts(@RequestParam("prodName") String prodName, Model model) {
-        List<Product> products = productService.searchProductsByName(prodName);
-        model.addAttribute("products", products);
-        return "viewProducts";
+    @GetMapping("/{prodId}")
+    public ResponseEntity<Product> getProductById(@PathVariable String prodId) {
+        return productService.getProductById(prodId)
+                .map(product -> new ResponseEntity<>(product, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productService.getAllProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 }

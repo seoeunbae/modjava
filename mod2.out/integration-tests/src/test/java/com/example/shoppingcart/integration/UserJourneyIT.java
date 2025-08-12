@@ -19,6 +19,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.test.context.ContextConfiguration;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,12 +30,14 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
 
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest(classes = ShoppingCartApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ContextConfiguration(initializers = TestcontainersInitializer.class)
+@Transactional
 public class UserJourneyIT {
 
     @LocalServerPort
@@ -44,6 +48,12 @@ public class UserJourneyIT {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     private WebDriver driver;
 
@@ -56,6 +66,10 @@ public class UserJourneyIT {
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         driver = new ChromeDriver(options);
+
+        // Create an admin user for testing
+        User adminUser = new User("Admin User", "admin@example.com", passwordEncoder.encode("adminpass"), "1234567890", "Admin Address", "12345", "ADMIN");
+        entityManager.persistAndFlush(adminUser);
     }
 
     @AfterAll
@@ -120,5 +134,42 @@ public class UserJourneyIT {
         new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/userHome"));
         assertTrue(driver.getCurrentUrl().contains("/userHome"));
         assertEquals("User Home", driver.getTitle());
+    }
+
+    @Test
+    void testAdminAddProduct() {
+        // Admin Login
+        driver.get("http://localhost:" + port + "/login");
+        driver.findElement(By.id("email")).sendKeys("admin@example.com");
+        driver.findElement(By.id("password")).sendKeys("adminpass");
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/adminHome"));
+        assertTrue(driver.getCurrentUrl().contains("/adminHome"));
+        assertEquals("Admin Home", driver.getTitle());
+
+        // Navigate to Add Product Page
+        driver.get("http://localhost:" + port + "/admin/addProduct"); // Assuming this URL
+        assertEquals("Add Product", driver.getTitle()); // Assuming this title
+
+        // Fill Product Details
+        driver.findElement(By.id("prodName")).sendKeys("Test Product");
+        driver.findElement(By.id("prodType")).sendKeys("Electronics");
+        driver.findElement(By.id("prodInfo")).sendKeys("A product for integration testing.");
+        driver.findElement(By.id("prodPrice")).sendKeys("99.99");
+        driver.findElement(By.id("prodQuantity")).sendKeys("10");
+        // For image, we might need to handle file uploads, which is more complex.
+        // For now, we'll skip image upload or assume a default/no image scenario.
+
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+        // Verify redirect to View Products page after adding
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/admin/viewProducts"));
+        assertTrue(driver.getCurrentUrl().contains("/admin/viewProducts"));
+        assertEquals("View Products", driver.getTitle()); // Assuming this title
+
+        // Verify product is in the list
+        assertTrue(driver.getPageSource().contains("Test Product"));
+        assertTrue(driver.getPageSource().contains("99.99"));
     }
 }
