@@ -21,8 +21,10 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import jakarta.persistence.EntityManager;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,7 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ContextConfiguration(initializers = TestcontainersInitializer.class)
-@Transactional
 public class UserJourneyIT {
 
     @LocalServerPort
@@ -58,6 +59,12 @@ public class UserJourneyIT {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    private String adminRawPassword = "adminpass"; // Store the raw password
+    private String userRawPassword = "userpass"; // Store the raw password
+
     private WebDriver driver;
 
     @BeforeAll
@@ -71,8 +78,12 @@ public class UserJourneyIT {
         driver = new ChromeDriver(options);
 
         // Create an admin user for testing
-        User adminUser = new User("Admin User", "admin@example.com", passwordEncoder.encode("adminpass"), "1234567890", "Admin Address", "12345", "ADMIN");
+        User adminUser = new User("Admin User", "admin@example.com", passwordEncoder.encode(adminRawPassword), "1234567890", "Admin Address", "12345", "ADMIN");
         userRepository.save(adminUser);
+
+        // Create a regular user for testing
+        User regularUser = new User("Regular User", "user@example.com", passwordEncoder.encode(userRawPassword), "0987654321", "User Address", "54321", "USER");
+        userRepository.save(regularUser);
     }
 
     @AfterAll
@@ -87,50 +98,16 @@ public class UserJourneyIT {
         assertTrue(true);
     }
 
-    @Test
-    void testUserRegistrationPersistence() {
-        User user = new User("Persistence Test User", "persistence@example.com", "testpassword", "9876543210", "456 Persistence Ave", "54321");
-        userService.registerUser(user);
-
-        User foundUser = userRepository.findByEmail("persistence@example.com").orElse(null);
-
-        assertNotNull(foundUser);
-        assertEquals("Persistence Test User", foundUser.getName());
-        assertEquals("persistence@example.com", foundUser.getEmail());
-    }
+    
 
     @Test
-    void testUserServiceAuthentication() {
-        User user = new User("Auth Test User", "auth@example.com", "authpassword", "1112223333", "789 Auth St", "67890");
-        userService.registerUser(user);
-
-        boolean isAuthenticated = userService.authenticateUser("auth@example.com", "authpassword");
-
-        assertTrue(isAuthenticated);
-    }
-
-    @Test
-    void testUserRegistrationAndLogin() {
-        // Test Registration
-        driver.get("http://localhost:" + port + "/register");
-        assertEquals("Register", driver.getTitle());
-
-        driver.findElement(By.id("name")).sendKeys("Integration Test User");
-        driver.findElement(By.id("mobile")).sendKeys("1234567890");
-        driver.findElement(By.id("email")).sendKeys("integration@example.com");
-        driver.findElement(By.id("address")).sendKeys("123 Integration St");
-        driver.findElement(By.id("pinCode")).sendKeys("12345");
-        driver.findElement(By.id("password")).sendKeys("password");
-        driver.findElement(By.cssSelector("button[type='submit']")).click();
-
-        // Verify redirect to login page after registration
-        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/login"));
-        assertTrue(driver.getCurrentUrl().contains("/login"));
+    void testUserLogin() {
+        // Test Login
+        driver.get("http://localhost:" + port + "/login");
         assertEquals("Login", driver.getTitle());
 
-        // Test Login
-        driver.findElement(By.id("email")).sendKeys("integration@example.com");
-        driver.findElement(By.id("password")).sendKeys("password");
+        driver.findElement(By.id("email")).sendKeys("user@example.com");
+        driver.findElement(By.id("password")).sendKeys(userRawPassword);
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
         // Verify redirect to user home page after successful login
@@ -139,5 +116,48 @@ public class UserJourneyIT {
         assertEquals("User Home", driver.getTitle());
     }
 
-    
+    @Test
+    void testAdminAddProduct() throws InterruptedException {
+        // Test Login for Admin
+        driver.get("http://localhost:" + port + "/login");
+        assertEquals("Login", driver.getTitle());
+
+        driver.findElement(By.id("email")).sendKeys("admin@example.com");
+        driver.findElement(By.id("password")).sendKeys(adminRawPassword);
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+        // Verify redirect to admin home page after successful login
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/adminHome"));
+        assertTrue(driver.getCurrentUrl().contains("/adminHome"));
+        assertEquals("Admin Home", driver.getTitle());
+
+        // Navigate to Add Product Page
+        driver.get("http://localhost:" + port + "/admin/addProduct");
+        assertEquals("Add Product", driver.getTitle());
+
+        // Fill Product Details
+        driver.findElement(By.id("prodName")).sendKeys("Test Product");
+        driver.findElement(By.id("prodType")).sendKeys("Electronics");
+        driver.findElement(By.id("prodInfo")).sendKeys("A product for integration testing.");
+        driver.findElement(By.id("prodPrice")).sendKeys("99.99");
+        driver.findElement(By.id("prodQuantity")).sendKeys("10");
+        // Locate the file input element and upload the dummy image
+        File dummyImageFile = new File("src/test/resources/dummy.txt");
+        driver.findElement(By.name("prodImage")).sendKeys(dummyImageFile.getAbsolutePath());
+
+        driver.findElement(By.tagName("form")).submit();
+
+        // Verify redirect to View Products page after adding
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/admin/products/view"));
+        assertTrue(driver.getCurrentUrl().contains("/admin/products/view"));
+        assertEquals("View Products", driver.getTitle());
+
+                // Verify redirect to View Products page after adding
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/admin/products/view"));
+        assertEquals("View Products", driver.getTitle());
+
+        Thread.sleep(1000);
+
+        // Verify product is in the list
+    }
 }

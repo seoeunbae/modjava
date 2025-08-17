@@ -2,7 +2,9 @@ package com.example.shoppingcart.service;
 
 import com.example.shoppingcart.model.User;
 import com.example.shoppingcart.repository.UserRepository;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,15 +13,22 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ObjectProvider<CartService> cartServiceProvider;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ObjectProvider<CartService> cartServiceProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.cartServiceProvider = cartServiceProvider;
     }
 
     public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER"); // Assign default role if not provided
+        }
+        User registeredUser = userRepository.save(user);
+        cartServiceProvider.getObject().createCart(registeredUser);
+        return registeredUser;
     }
 
     public User findByEmail(String email) {

@@ -30,14 +30,23 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();
 
+    private String shippingAddress;
+    private String city;
+    private String state;
+    private String zip;
+
     public Order() {
     }
 
-    public Order(User user, LocalDateTime orderDate, double totalAmount, int shipped) {
+    public Order(User user, LocalDateTime orderDate, double totalAmount, int shipped, String shippingAddress, String city, String state, String zip) {
         this.user = user;
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.shipped = shipped;
+        this.shippingAddress = shippingAddress;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
     }
 
     public Long getId() {
@@ -96,5 +105,37 @@ public class Order {
     public void removeOrderItem(OrderItem orderItem) {
         this.orderItems.remove(orderItem);
         orderItem.setOrder(null);
+    }
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
     }
 }

@@ -103,7 +103,7 @@ public class CartService {
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
-        return cartRepository.findByUser(user).orElse(null);
+        return cartRepository.findByUser(user).orElseGet(() -> createCart(user));
     }
 
     @Transactional
@@ -119,5 +119,11 @@ public class CartService {
             cart.getCartItems().clear();
             cartRepository.save(cart);
         }
+    }
+
+    @Transactional
+    public Cart createCart(User user) {
+        Cart cart = new Cart(user);
+        return cartRepository.save(cart);
     }
 }

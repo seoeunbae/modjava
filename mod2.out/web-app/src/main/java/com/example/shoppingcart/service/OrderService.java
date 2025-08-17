@@ -35,7 +35,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order placeOrder(String userEmail) {
+    public Order placeOrder(String userEmail, String shippingAddress, String city, String state, String zip) {
         User user = userService.findByEmail(userEmail);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
@@ -50,7 +50,7 @@ public class OrderService {
                 .mapToDouble(item -> item.getProduct().getProdPrice() * item.getQuantity())
                 .sum();
 
-        Order order = new Order(user, LocalDateTime.now(), totalAmount, 0); // 0 for not shipped
+        Order order = new Order(user, LocalDateTime.now(), totalAmount, 0, shippingAddress, city, state, zip); // 0 for not shipped
         order = orderRepository.save(order);
 
         for (CartItem cartItem : cart.getCartItems()) {

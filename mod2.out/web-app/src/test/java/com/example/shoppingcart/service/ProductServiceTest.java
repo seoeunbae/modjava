@@ -35,14 +35,20 @@ public class ProductServiceTest {
     }
 
     @Test
-    void addProduct_shouldReturnSavedProduct() {
-        when(productRepository.save(product1)).thenReturn(product1);
+    void addProduct_shouldReturnSuccessMessage() {
+        when(productRepository.save(any(Product.class))).thenReturn(product1);
 
-        Product savedProduct = productService.addProduct(product1);
+        boolean success = productService.addProduct(
+                product1.getProdName(),
+                product1.getProdType(),
+                product1.getProdInfo(),
+                product1.getProdPrice(),
+                product1.getProdQuantity(),
+                product1.getProdImage()
+        );
 
-        assertNotNull(savedProduct);
-        assertEquals(product1.getProdId(), savedProduct.getProdId());
-        verify(productRepository, times(1)).save(product1);
+        assertTrue(success);
+        verify(productRepository, times(1)).save(any(Product.class));
     }
 
     @Test

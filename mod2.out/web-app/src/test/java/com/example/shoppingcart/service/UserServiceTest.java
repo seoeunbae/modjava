@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -22,12 +23,19 @@ public class UserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private ObjectProvider<CartService> cartServiceProvider;
+
+    @Mock
+    private CartService cartService;
+
     @InjectMocks
     private UserService userService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        when(cartServiceProvider.getObject()).thenReturn(cartService);
     }
 
     @Test
@@ -44,6 +52,7 @@ public class UserServiceTest {
         assertNotNull(registeredUser);
         assertEquals("encodedPassword", registeredUser.getPassword());
         verify(userRepository, times(1)).save(user);
+        verify(cartService, times(1)).createCart(registeredUser);
     }
 
     @Test

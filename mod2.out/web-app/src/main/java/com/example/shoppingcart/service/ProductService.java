@@ -18,9 +18,28 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product addProduct(Product product) {
-        // Add any business logic or validation before saving
-        return productRepository.save(product);
+    public boolean addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity, byte[] prodImage) {
+        Product product = new Product();
+        product.setProdName(prodName);
+        product.setProdType(prodType);
+        product.setProdInfo(prodInfo);
+        product.setProdPrice(prodPrice);
+        product.setProdQuantity(prodQuantity);
+        product.setProdImage(prodImage);
+
+        // Generate a unique product ID (e.g., UUID or sequence)
+        // For simplicity, let's use a random UUID for now.
+        product.setProdId(java.util.UUID.randomUUID().toString());
+
+        try {
+            productRepository.save(product);
+            System.out.println("Product saved successfully: " + product.getProdId());
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error saving product: " + e.getMessage());
+            e.printStackTrace();
+            return false; // Indicate failure
+        }
     }
 
     public Product updateProduct(Product product) {

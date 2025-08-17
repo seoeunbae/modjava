@@ -86,7 +86,7 @@ public class OrderServiceTest {
         when(productService.updateProduct(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
         doNothing().when(cartService).clearCart(testUser.getEmail());
 
-        Order placedOrder = orderService.placeOrder(testUser.getEmail());
+        Order placedOrder = orderService.placeOrder(testUser.getEmail(), "123 Test St", "Test City", "Test State", "12345");
 
         assertNotNull(placedOrder);
         assertEquals(testUser.getId(), placedOrder.getUser().getId());
@@ -99,8 +99,8 @@ public class OrderServiceTest {
 
     @Test
     void testGetOrdersByUser() {
-        Order order1 = new Order(testUser, LocalDateTime.now(), 100.0, 0);
-        Order order2 = new Order(testUser, LocalDateTime.now(), 200.0, 1);
+        Order order1 = new Order(testUser, LocalDateTime.now(), 100.0, 0, "address", "city", "state", "zip");
+        Order order2 = new Order(testUser, LocalDateTime.now(), 200.0, 1, "address", "city", "state", "zip");
         List<Order> orders = Arrays.asList(order1, order2);
 
         when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
@@ -115,7 +115,7 @@ public class OrderServiceTest {
 
     @Test
     void testGetOrderByIdFound() {
-        Order order = new Order(testUser, LocalDateTime.now(), 100.0, 0);
+        Order order = new Order(testUser, LocalDateTime.now(), 100.0, 0, "address", "city", "state", "zip");
         order.setId(1L);
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
 
@@ -136,7 +136,7 @@ public class OrderServiceTest {
 
     @Test
     void testUpdateOrderStatus() {
-        Order order = new Order(testUser, LocalDateTime.now(), 100.0, 0);
+        Order order = new Order(testUser, LocalDateTime.now(), 100.0, 0, "address", "city", "state", "zip");
         order.setId(1L);
 
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
@@ -151,8 +151,8 @@ public class OrderServiceTest {
 
     @Test
     void testGetAllShippedOrders() {
-        Order order1 = new Order(testUser, LocalDateTime.now(), 100.0, 1);
-        Order order2 = new Order(testUser, LocalDateTime.now(), 200.0, 1);
+        Order order1 = new Order(testUser, LocalDateTime.now(), 100.0, 1, "address", "city", "state", "zip");
+        Order order2 = new Order(testUser, LocalDateTime.now(), 200.0, 1, "address", "city", "state", "zip");
         List<Order> shippedOrders = Arrays.asList(order1, order2);
 
         when(orderRepository.findByShipped(1)).thenReturn(shippedOrders);
@@ -166,8 +166,8 @@ public class OrderServiceTest {
 
     @Test
     void testGetAllUnshippedOrders() {
-        Order order1 = new Order(testUser, LocalDateTime.now(), 100.0, 0);
-        Order order2 = new Order(testUser, LocalDateTime.now(), 200.0, 0);
+        Order order1 = new Order(testUser, LocalDateTime.now(), 100.0, 0, "address", "city", "state", "zip");
+        Order order2 = new Order(testUser, LocalDateTime.now(), 200.0, 0, "address", "city", "state", "zip");
         List<Order> unshippedOrders = Arrays.asList(order1, order2);
 
         when(orderRepository.findByShipped(0)).thenReturn(unshippedOrders);

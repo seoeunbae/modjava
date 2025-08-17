@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/orders")
 public class OrderController {
 
     private final OrderService orderService;
@@ -20,22 +19,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/place")
-    public String placeOrder(Principal principal) {
-        String userEmail = principal.getName();
-        orderService.placeOrder(userEmail);
-        return "redirect:/orders/history";
-    }
-
-    @GetMapping("/history")
-    public String viewOrderHistory(Model model, Principal principal) {
-        String userEmail = principal.getName();
-        List<Order> orders = orderService.getOrdersByUser(userEmail);
-        model.addAttribute("orders", orders);
-        return "orderHistory";
-    }
-
-    @GetMapping("/{orderId}")
+    @GetMapping("/orders/{orderId}")
     public String viewOrderDetails(@PathVariable Long orderId, Model model) {
         Optional<Order> order = orderService.getOrderById(orderId);
         if (order.isPresent()) {
@@ -53,14 +37,14 @@ public class OrderController {
         return "redirect:/admin/orders/unshipped"; // Redirect to unshipped orders view after update
     }
 
-    @GetMapping("/admin/shipped")
+    @GetMapping("/admin/orders/shipped")
     public String viewShippedOrders(Model model) {
         List<Order> orders = orderService.getAllShippedOrders();
         model.addAttribute("orders", orders);
         return "adminShippedOrders";
     }
 
-    @GetMapping("/admin/unshipped")
+    @GetMapping("/admin/orders/unshipped")
     public String viewUnshippedOrders(Model model) {
         List<Order> orders = orderService.getAllUnshippedOrders();
         model.addAttribute("orders", orders);
