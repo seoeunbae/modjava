@@ -26,13 +26,15 @@ public class OrderService {
     private final CartService cartService;
     private final UserService userService;
     private final ProductService productService;
+    private final EmailService emailService;
 
-    public OrderService(OrderRepository orderRepository, OrderItemRepository orderItemRepository, CartService cartService, UserService userService, ProductService productService) {
+    public OrderService(OrderRepository orderRepository, OrderItemRepository orderItemRepository, CartService cartService, UserService userService, ProductService productService, EmailService emailService) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.cartService = cartService;
         this.userService = userService;
         this.productService = productService;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -67,6 +69,8 @@ public class OrderService {
 
         cartService.clearCart(userEmail);
 
+        emailService.sendOrderConfirmationEmail(order);
+
         return order;
     }
 
@@ -99,7 +103,11 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         order.setShipped(shippedStatus);
-        return orderRepository.save(order);
+        Order updatedOrder = orderRepository.save(order);
+        if (shippedStatus == 1) {
+            emailService.sendShippingUpdateEmail(updatedOrder);
+        }
+        return updatedOrder;
     }
 
     @Transactional(readOnly = true)

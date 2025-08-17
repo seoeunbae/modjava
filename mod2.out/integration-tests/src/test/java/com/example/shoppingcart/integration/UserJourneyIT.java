@@ -19,6 +19,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.test.context.ContextConfiguration;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import jakarta.persistence.EntityManager;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -61,6 +63,9 @@ public class UserJourneyIT {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @MockBean
+    private JavaMailSender javaMailSender;
 
     private String adminRawPassword = "adminpass"; // Store the raw password
     private String userRawPassword = "userpass"; // Store the raw password

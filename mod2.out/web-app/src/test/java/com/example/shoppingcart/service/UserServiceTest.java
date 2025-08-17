@@ -29,6 +29,9 @@ public class UserServiceTest {
     @Mock
     private CartService cartService;
 
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
     private UserService userService;
 
@@ -53,6 +56,7 @@ public class UserServiceTest {
         assertEquals("encodedPassword", registeredUser.getPassword());
         verify(userRepository, times(1)).save(user);
         verify(cartService, times(1)).createCart(registeredUser);
+        verify(emailService, times(1)).sendRegistrationEmail(registeredUser);
     }
 
     @Test

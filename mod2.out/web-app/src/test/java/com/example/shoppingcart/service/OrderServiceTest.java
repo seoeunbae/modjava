@@ -43,6 +43,9 @@ public class OrderServiceTest {
     @Mock
     private ProductService productService;
 
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -147,6 +150,7 @@ public class OrderServiceTest {
         assertNotNull(updatedOrder);
         assertEquals(1, updatedOrder.getShipped());
         verify(orderRepository, times(1)).save(order);
+        verify(emailService, times(1)).sendShippingUpdateEmail(updatedOrder);
     }
 
     @Test

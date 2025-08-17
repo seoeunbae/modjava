@@ -20,6 +20,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.test.context.ContextConfiguration;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -48,6 +50,9 @@ public class ShoppingJourneyIT {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @MockBean
+    private JavaMailSender javaMailSender;
 
     private String userRawPassword = "userpass";
 

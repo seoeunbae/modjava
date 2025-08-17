@@ -14,11 +14,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ObjectProvider<CartService> cartServiceProvider;
+    private final EmailService emailService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ObjectProvider<CartService> cartServiceProvider) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ObjectProvider<CartService> cartServiceProvider, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.cartServiceProvider = cartServiceProvider;
+        this.emailService = emailService;
     }
 
     public User registerUser(User user) {
@@ -28,6 +30,7 @@ public class UserService {
         }
         User registeredUser = userRepository.save(user);
         cartServiceProvider.getObject().createCart(registeredUser);
+        emailService.sendRegistrationEmail(registeredUser);
         return registeredUser;
     }
 
