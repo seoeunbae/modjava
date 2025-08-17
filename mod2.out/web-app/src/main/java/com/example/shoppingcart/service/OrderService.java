@@ -8,6 +8,7 @@ import com.example.shoppingcart.repository.OrderItemRepository;
 import com.example.shoppingcart.repository.OrderRepository;
 import com.example.shoppingcart.model.Product;
 import com.example.shoppingcart.model.User;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,16 +70,28 @@ public class OrderService {
         return order;
     }
 
+    @Transactional(readOnly = true)
     public List<Order> getOrdersByUser(String userEmail) {
         User user = userService.findByEmail(userEmail);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
-        return orderRepository.findByUser(user);
+        List<Order> orders = orderRepository.findByUser(user);
+        orders.forEach(order -> {
+            Hibernate.initialize(order.getOrderItems());
+            order.getOrderItems().forEach(item -> Hibernate.initialize(item.getProduct()));
+        });
+        return orders;
     }
 
+    @Transactional(readOnly = true)
     public Optional<Order> getOrderById(Long orderId) {
-        return orderRepository.findById(orderId);
+        Optional<Order> order = orderRepository.findById(orderId);
+        order.ifPresent(o -> {
+            Hibernate.initialize(o.getOrderItems());
+            o.getOrderItems().forEach(item -> Hibernate.initialize(item.getProduct()));
+        });
+        return order;
     }
 
     @Transactional
@@ -89,11 +102,23 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional(readOnly = true)
     public List<Order> getAllShippedOrders() {
-        return orderRepository.findByShipped(1);
+        List<Order> orders = orderRepository.findByShipped(1);
+        orders.forEach(order -> {
+            Hibernate.initialize(order.getOrderItems());
+            order.getOrderItems().forEach(item -> Hibernate.initialize(item.getProduct()));
+        });
+        return orders;
     }
 
+    @Transactional(readOnly = true)
     public List<Order> getAllUnshippedOrders() {
-        return orderRepository.findByShipped(0);
+        List<Order> orders = orderRepository.findByShipped(0);
+        orders.forEach(order -> {
+            Hibernate.initialize(order.getOrderItems());
+            order.getOrderItems().forEach(item -> Hibernate.initialize(item.getProduct()));
+        });
+        return orders;
     }
 }

@@ -101,6 +101,7 @@ public class UserJourneyIT {
     
 
     @Test
+    @Transactional
     void testUserLogin() {
         // Test Login
         driver.get("http://localhost:" + port + "/login");
@@ -117,6 +118,7 @@ public class UserJourneyIT {
     }
 
     @Test
+    @Transactional
     void testAdminAddProduct() throws InterruptedException {
         // Test Login for Admin
         driver.get("http://localhost:" + port + "/login");
@@ -159,5 +161,54 @@ public class UserJourneyIT {
         Thread.sleep(1000);
 
         // Verify product is in the list
+    }
+
+    @Test
+    @Transactional
+    void testAdminOrderManagement() {
+        // 1. Login as user and place an order
+        driver.get("http://localhost:" + port + "/login");
+        driver.findElement(By.id("email")).sendKeys("user@example.com");
+        driver.findElement(By.id("password")).sendKeys(userRawPassword);
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/userHome"));
+
+        driver.get("http://localhost:" + port + "/products");
+        driver.findElement(By.id("addToCartForm")).submit();
+        driver.get("http://localhost:" + port + "/user/cart");
+        driver.findElement(By.xpath("//a[contains(text(),'Checkout')]")).click();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/user/checkout"));
+        driver.findElement(By.id("address")).sendKeys("123 Admin Test St");
+        driver.findElement(By.id("city")).sendKeys("AdminTestCity");
+        driver.findElement(By.id("state")).sendKeys("ATS");
+        driver.findElement(By.id("zip")).sendKeys("54321");
+        driver.findElement(By.xpath("//button[contains(text(),'Place Order')]")).click();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.titleIs("My Orders"));
+
+        // 2. Logout
+        driver.findElement(By.xpath("//form[@action='/logout']/button")).click();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/login"));
+
+        // 3. Login as admin
+        driver.findElement(By.id("email")).sendKeys("admin@example.com");
+        driver.findElement(By.id("password")).sendKeys(adminRawPassword);
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains("/adminHome"));
+
+        // 4. View unshipped orders and verify the order is present
+        driver.get("http://localhost:" + port + "/admin/orders/unshipped");
+        assertEquals("Unshipped Orders", driver.getTitle());
+        assertTrue(driver.getPageSource().contains("user@example.com"));
+        assertTrue(driver.getPageSource().contains("AdminTestCity"));
+
+        // 5. Mark the order as shipped
+        driver.findElement(By.xpath("//button[text()='Mark as Shipped']")).click();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.titleIs("Unshipped Orders"));
+
+        // 6. View shipped orders and verify the order is present
+        driver.get("http://localhost:" + port + "/admin/orders/shipped");
+        assertEquals("Shipped Orders", driver.getTitle());
+        assertTrue(driver.getPageSource().contains("user@example.com"));
+        assertTrue(driver.getPageSource().contains("AdminTestCity"));
     }
 }

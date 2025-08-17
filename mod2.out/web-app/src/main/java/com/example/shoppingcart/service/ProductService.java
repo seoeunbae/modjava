@@ -4,6 +4,7 @@ import com.example.shoppingcart.model.Product;
 import com.example.shoppingcart.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,10 +58,12 @@ public class ProductService {
         productRepository.deleteById(prodId);
     }
 
+    @Transactional(readOnly = true)
     public Optional<Product> getProductById(String prodId) {
         return productRepository.findById(prodId);
     }
 
+    @Transactional(readOnly = true)
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }

@@ -6,6 +6,7 @@ import com.example.shoppingcart.repository.CartItemRepository;
 import com.example.shoppingcart.repository.CartRepository;
 import com.example.shoppingcart.model.Product;
 import com.example.shoppingcart.model.User;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,12 +99,18 @@ public class CartService {
         cart.removeCartItem(cartItem);
     }
 
+    @Transactional(readOnly = true)
     public Cart getCartByUser(String userEmail) {
         User user = userService.findByEmail(userEmail);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
-        return cartRepository.findByUser(user).orElseGet(() -> createCart(user));
+        Cart cart = cartRepository.findByUser(user).orElseGet(() -> createCart(user));
+        if (cart != null) {
+            Hibernate.initialize(cart.getCartItems());
+            cart.getCartItems().forEach(item -> Hibernate.initialize(item.getProduct()));
+        }
+        return cart;
     }
 
     @Transactional

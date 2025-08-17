@@ -5,6 +5,21 @@
     <title>Admin Home</title>
 </head>
 <body>
-    <h1>Admin Home</h1>
+    <h1>Admin Dashboard</h1>
+    <h2>Product Management</h2>
+    <ul>
+        <li><a th:href="@{/admin/products/view}">View All Products</a></li>
+        <li><a th:href="@{/admin/addProduct}">Add a New Product</a></li>
+    </ul>
+
+    <h2>Order Management</h2>
+    <ul>
+        <li><a th:href="@{/admin/orders/shipped}">View Shipped Orders</a></li>
+        <li><a th:href="@{/admin/orders/unshipped}">View Unshipped Orders</a></li>
+    </ul>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>
