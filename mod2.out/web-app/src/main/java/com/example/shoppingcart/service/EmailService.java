@@ -10,35 +10,39 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
+    private final JavaMailSender mailSender;
+
     @Autowired
-    private JavaMailSender mailSender;
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void sendRegistrationEmail(User user) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
         message.setSubject("Welcome to Our Shopping Site!");
-        message.setText("Dear " + user.getName() + "!\n\nThank you for registering with us!");
+        message.setText("Dear " + user.getName() + ",\n\nThank you for registering with us!");
         // In a real application, you would send the email here.
         // For this migration, we will just log it.
         System.out.println("Sending registration email to: " + user.getEmail());
-        // mailSender.send(message);
+        mailSender.send(message);
     }
 
     public void sendOrderConfirmationEmail(Order order) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(order.getUser().getEmail());
         message.setSubject("Your Order Confirmation");
-        message.setText("Dear " + order.getUser().getName() + "!\n\nYour order with ID " + order.getId() + " has been placed successfully.");
+        message.setText("Dear " + order.getUser().getName() + ",\n\nYour order with ID " + order.getId() + " has been placed successfully.");
+        mailSender.send(message);
         System.out.println("Sending order confirmation email to: " + order.getUser().getEmail());
-        // mailSender.send(message);
     }
 
     public void sendShippingUpdateEmail(Order order) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(order.getUser().getEmail());
         message.setSubject("Your Order Has Shipped!");
-        message.setText("Dear " + order.getUser().getName() + "!\n\nYour order with ID " + order.getId() + " has been shipped.");
+        message.setText("Dear " + order.getUser().getName() + ",\n\nYour order with ID " + order.getId() + " has been shipped.");
         System.out.println("Sending shipping update email to: " + order.getUser().getEmail());
-        // mailSender.send(message);
+        mailSender.send(message);
     }
 }

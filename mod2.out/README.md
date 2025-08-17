@@ -1,5 +1,9 @@
 # Output of modernized codes
 
+```logs
+check git logs, local changes that are not yet committed, run an end-2-end test, and then give me a summary of what phases and sub-stages have you completed and what is pending  
+```
+
 ## Migreate Java to Spring Boot
 
 ```bash
@@ -51,9 +55,7 @@ Agent didn't keep his state and needed to restart from the begining. Many times 
 ```
 
 ```logs
-give me a summary of what phases and sub-stages have you completed and what   │
-│    is pending                                                                    │
-╰──────────────────────────────────────────────────────────────────────────────────╯
+check git logs, local changes that are not yet committed, run an end-2-end test, and then give me a summary of what phases and sub-stages have you completed and what is pending  
 
 ✦ Okay, here's a summary of my progress:
 
