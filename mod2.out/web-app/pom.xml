@@ -13,6 +13,10 @@
     <artifactId>web-app</artifactId>
     <name>web-app</name>
 
+    <properties>
+        <start-class>com.example.shoppingcart.ShoppingCartApplication</start-class>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.example.shoppingcart</groupId>
@@ -66,14 +70,19 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>exec</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
                 <configuration>
                     <mainClass>com.example.shoppingcart.ShoppingCartApplication</mainClass>
-                    <includes>
-                        <include>
-                            <groupId>com.example.shoppingcart</groupId>
-                            <artifactId>web-app</artifactId>
-                        </include>
-                    </includes>
                 </configuration>
             </plugin>
             <plugin>

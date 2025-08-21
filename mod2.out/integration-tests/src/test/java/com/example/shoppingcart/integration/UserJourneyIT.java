@@ -208,7 +208,7 @@ public class UserJourneyIT {
 
         // 5. Mark the order as shipped
         driver.findElement(By.xpath("//button[text()='Mark as Shipped']")).click();
-        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.titleIs("Unshipped Orders"));
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.titleIs("Shipped Orders"));
 
         // 6. View shipped orders and verify the order is present
         driver.get("http://localhost:" + port + "/admin/orders/shipped");

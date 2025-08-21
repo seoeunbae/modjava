@@ -61,7 +61,7 @@ public class OrderServiceTest {
         MockitoAnnotations.openMocks(this);
 
         testUser = new User("Test User", "test@example.com", "password", "1234567890", "123 Test St", "12345");
-        testUser.setId(1L);
+        
 
         testProduct1 = new Product("P001", "Laptop", "Electronics", "Powerful laptop", 1200.00, 10, null);
         testProduct2 = new Product("P002", "Mouse", "Electronics", "Wireless mouse", 25.00, 50, null);
@@ -92,7 +92,7 @@ public class OrderServiceTest {
         Order placedOrder = orderService.placeOrder(testUser.getEmail(), "123 Test St", "Test City", "Test State", "12345");
 
         assertNotNull(placedOrder);
-        assertEquals(testUser.getId(), placedOrder.getUser().getId());
+        assertEquals(testUser.getEmail(), placedOrder.getUser().getEmail());
         assertEquals(2, placedOrder.getOrderItems().size());
         verify(orderRepository, times(1)).save(any(Order.class));
         verify(orderItemRepository, times(2)).save(any(OrderItem.class));

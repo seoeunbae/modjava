@@ -49,12 +49,12 @@ public class CartServiceTest {
         MockitoAnnotations.openMocks(this);
 
         testUser = new User("Test User", "test@example.com", "password", "1234567890", "123 Test St", "12345");
-        testUser.setId(1L);
+        
 
         testProduct = new Product("P001", "Laptop", "Electronics", "Powerful laptop", 1200.00, 10, null);
 
         testCart = new Cart(testUser);
-        testCart.setId(1L);
+        
     }
 
     @Test

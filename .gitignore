@@ -2,3 +2,4 @@ mcdc
 codmod
 target/
 spring-boot-app.log
+mod2.out/web-app/src/main/resources/application.properties

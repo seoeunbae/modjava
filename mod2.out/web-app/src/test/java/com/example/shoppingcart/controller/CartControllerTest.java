@@ -41,7 +41,7 @@ class CartControllerTest {
     @BeforeEach
     void setUp() {
         mockUser = new User();
-        mockUser.setId(1L);
+        
         mockUser.setEmail("test@example.com");
         when(userService.findByEmail("test@example.com")).thenReturn(mockUser);
     }

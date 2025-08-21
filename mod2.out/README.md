@@ -172,3 +172,123 @@ Can you give me an update again on your progress, which phases, stages and sub-s
   continues to fail. I have presented you with the code and the error, and I would
   appreciate any help you can provide in debugging this issue.
 ```
+
+Last mile
+
+```logs
+
+╭──────────────────────────────────────────────────────────────────────────────────╮
+│  > give me a summary of what phases and sub-stages have you completed and what   │
+│    is pending                                                                    │
+╰──────────────────────────────────────────────────────────────────────────────────╯                                                                  
+
+╭───────────────────────────────────────────────────────────────────────────────────╮
+│  > can you generate deployment scripts to GCP using Cloud SQL for database, GKE   │
+│    for Java backend and Cloud Run for the backend ?                               │
+╰───────────────────────────────────────────────────────────────────────────────────╯
+
+╭───────────────────────────────────────────────────────────────────────────────────╮
+│  > create a deployment script with prompts for me to provide necessary variable   │
+│    values, then deploy                                                            │
+╰───────────────────────────────────────────────────────────────────────────────────╯
+
+╭──────────────────────────────────────────────────────────────────────────────────╮
+│  > update the placeholder variables and how the deploy.sh script works so that   │
+│    the deployment can be done with different values in the future                │
+╰──────────────────────────────────────────────────────────────────────────────────╯
+
+╭──────────────────────────────────────────────────────────────────────────────────────╮
+│  > generate scripts to create necessary components such as MysqL instance and       │
+│    connection to avoid the need to create those manually. I will run this script to │
+│     create those necessary resources, get the resource information needed for the   │
+│    deploy.sh script                                                                 │
+╰──────────────────────────────────────────────────────────────────────────────────────╯
+
+╭───────────────────────────────────────────────────────────────────────────────────╮
+│  > edit deploy.sh to get the database password from a secret in Secret Manager.   │
+│    You can prompt for the secret name instead of the password                     │
+╰───────────────────────────────────────────────────────────────────────────────────╯
+
+╭─────────────────────────────────────────────────────────────────────────────────────────╮
+│  > search the web to find out if there is known issue with getting secret manager csi   │
+│    driver to work with Autopilot GKE                                                    │
+╰─────────────────────────────────────────────────────────────────────────────────────────╯
+
+✦ Of course, I will search for any known issues with the Secret Manager CSI driver on GKE
+  Autopilot. This is a good step to ensure we haven't missed any community-reported problems or
+  workarounds.
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  GoogleSearch Searching the web for: "gke autopilot secret manager csi driver known issue…  │
+ │                                                                                               │
+ │    Search results for "gke autopilot secret manager csi driver known issues"                  │
+ │    returned.                                                                                  │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────╯
+✦ Thank you for asking me to search for known issues. That was a very helpful step.
+
+  The search results have revealed a critical piece of information: the Secret Manager add-on
+  for GKE Autopilot, which is the recommended way to access secrets, is currently a preview 
+  feature.
+
+I have authenticated to GCP. Please use the setup_gcp_resources.sh and deploy.sh to check the current deployment status in my GCP account, project addo-argolis-demo, region asia-southeast1, check logs for errors and sugget solutions.
+
+```
+
+```bash
+## Deploying the app to GCP
+./setup_gcp_resources.sh 
+
+--- GCP Resource Setup Complete! ---
+Please use the following values when running the 'deploy.sh' script:
+---------------------------------------------------
+Instance Connection Name: addo-argolis-demo:asia-southeast1:shopping-cart-mysql-instance
+Database Name: shopping_cart_db
+Database User Secret Name: cloud-sql-username
+Database Password Secret Name: cloud-sql-password
+---------------------------------------------------
+```
+
+```bash
+# Test the app locally
+## client
+sudo dnf install postgresql # client
+## server
+sudo dnf install postgresql-server # server
+### initialize the database
+sudo postgresql-setup --initdb
+
+# Open the `pg_hba.conf` file in a text editor with `sudo` privileges. Find the line that looks like this:
+sudo vi /var/lib/pgsql/data/pg_hba.conf
+
+# local   all             postgres                                peer
+
+And change `peer` to `md5` or `scram-sha-256`. `md5` is fine for local development.
+# local   all             postgres                                peer
+# local   all             all                                     md5
+# # IPv4 local connections:
+# host    all             all             127.0.0.1/32            md5
+# # IPv6 local connections:
+# host    all             all             ::1/128                 md5
+
+# Restart PostgreSQL:**
+sudo systemctl restart postgresql
+sudo -i
+root> cd /var/lib/pgsql
+root> sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'your_password';"
+root> exit
+
+# configure the local database
+sudo -u postgres psql
+> CREATE DATABASE shopping_cart;
+> CREATE USER shopping_cart_user WITH PASSWORD 'help10note';
+> GRANT ALL PRIVILEGES ON DATABASE shopping_cart TO shopping_cart_user;
+
+> CREATE DATABASE shopping_cart_db;
+> CREATE USER shopping_cart_user WITH PASSWORD 'your_password';
+> GRANT ALL PRIVILEGES ON DATABASE shopping_cart_db TO shopping_cart_user;
+> FLUSH PRIVILEGES;
+> \q
+## Ctrl+C, then \q if needed
+
+|| use shopping-cart/database/mysql_query.sql to initialise the database
+
+```

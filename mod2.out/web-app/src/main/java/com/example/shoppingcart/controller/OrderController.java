@@ -34,7 +34,7 @@ public class OrderController {
     @PostMapping("/admin/orders/updateStatus")
     public String updateOrderStatus(@RequestParam("orderId") Long orderId, @RequestParam("shipped") int shipped) {
         orderService.updateOrderStatus(orderId, shipped);
-        return "redirect:/admin/orders/unshipped"; // Redirect to unshipped orders view after update
+        return "redirect:/admin/orders/shipped"; // Redirect to unshipped orders view after update
     }
 
     @GetMapping("/admin/orders/shipped")

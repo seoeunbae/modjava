@@ -39,6 +39,11 @@ public class WebController {
         return "register"; // This will resolve to register.html
     }
 
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/products";
+    }
+
     @GetMapping("/login")
     public String showLoginForm() {
         return "login"; // This will resolve to login.html

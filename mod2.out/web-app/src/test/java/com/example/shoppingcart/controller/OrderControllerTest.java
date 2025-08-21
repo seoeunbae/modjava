@@ -69,7 +69,7 @@ class OrderControllerTest {
                         .param("orderId", "1")
                         .param("shipped", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/orders/unshipped"));
+                .andExpect(redirectedUrl("/admin/orders/shipped"));
     }
 
     @Test

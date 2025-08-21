@@ -18,10 +18,8 @@ import java.util.Collections;
 @Table(name = "users")
 @Data
 public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String name;
+    @Id
     private String email;
     private String password;
     private String mobile;
