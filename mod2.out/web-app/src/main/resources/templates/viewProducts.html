@@ -15,6 +15,7 @@
                 <th>Info</th>
                 <th>Price</th>
                 <th>Quantity</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -25,6 +26,10 @@
                 <td th:text="${product.prodInfo}"></td>
                 <td th:text="${product.prodPrice}"></td>
                 <td th:text="${product.prodQuantity}"></td>
+                <td>
+                    <a th:href="@{/admin/products/update/{prodId}(prodId=${product.prodId})}">Update</a>
+                    <a th:href="@{/admin/products/delete/{prodId}(prodId=${product.prodId})}">Delete</a>
+                </td>
             </tr>
         </tbody>
     </table>

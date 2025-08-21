@@ -1,5 +1,6 @@
 package com.example.shoppingcart.service;
 
+import com.example.shoppingcart.model.Demand;
 import com.example.shoppingcart.model.Product;
 import com.example.shoppingcart.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,14 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final DemandService demandService;
+    private final EmailService emailService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, DemandService demandService, EmailService emailService) {
         this.productRepository = productRepository;
+        this.demandService = demandService;
+        this.emailService = emailService;
     }
 
     public boolean addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity, byte[] prodImage) {
@@ -43,11 +48,22 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public Product updateProduct(Product product) {
-        // Add any business logic or validation before saving
         // Ensure the product exists before updating
         if (productRepository.existsById(product.getProdId())) {
-            return productRepository.save(product);
+            Product updatedProduct = productRepository.save(product);
+
+            // Check if the product is back in stock
+            if (updatedProduct.getProdQuantity() > 0) {
+                List<Demand> demands = demandService.getDemandsByProduct(updatedProduct);
+                for (Demand demand : demands) {
+                    emailService.sendProductAvailableEmail(demand.getUser(), updatedProduct);
+                    demandService.deleteDemand(demand.getUser(), updatedProduct);
+                }
+            }
+
+            return updatedProduct;
         } else {
             // Handle case where product does not exist
             throw new RuntimeException("Product with ID " + product.getProdId() + " not found.");

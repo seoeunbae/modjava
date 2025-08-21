@@ -19,23 +19,27 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final ProductService productService;
     private final UserService userService;
+    private final DemandService demandService;
 
-    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, ProductService productService, UserService userService) {
+    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, ProductService productService, UserService userService, DemandService demandService) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.productService = productService;
         this.userService = userService;
+        this.demandService = demandService;
     }
 
     @Transactional
     public Cart addItemToCart(String userEmail, String prodId, int quantity) {
-        User user = userService.findByEmail(userEmail);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+        User user = userService.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Product product = productService.getProductById(prodId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        if (product.getProdQuantity() < quantity) {
+            demandService.createDemand(user, product);
+            throw new IllegalArgumentException("Product out of stock");
+        }
 
         Optional<Cart> optionalCart = cartRepository.findByUser(user);
         Cart cart = optionalCart.orElseGet(() -> cartRepository.save(new Cart(user)));
@@ -55,10 +59,7 @@ public class CartService {
 
     @Transactional
     public Cart updateCartItemQuantity(String userEmail, String prodId, int quantity) {
-        User user = userService.findByEmail(userEmail);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+        User user = userService.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Product product = productService.getProductById(prodId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
@@ -81,10 +82,7 @@ public class CartService {
 
     @Transactional
     public void removeCartItem(String userEmail, String prodId) {
-        User user = userService.findByEmail(userEmail);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+        User user = userService.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Product product = productService.getProductById(prodId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
@@ -101,10 +99,7 @@ public class CartService {
 
     @Transactional(readOnly = true)
     public Cart getCartByUser(String userEmail) {
-        User user = userService.findByEmail(userEmail);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+        User user = userService.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Cart cart = cartRepository.findByUser(user).orElseGet(() -> createCart(user));
         if (cart != null) {
             Hibernate.initialize(cart.getCartItems());
@@ -115,10 +110,7 @@ public class CartService {
 
     @Transactional
     public void clearCart(String userEmail) {
-        User user = userService.findByEmail(userEmail);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+        User user = userService.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Optional<Cart> optionalCart = cartRepository.findByUser(user);
         if (optionalCart.isPresent()) {
             Cart cart = optionalCart.get();

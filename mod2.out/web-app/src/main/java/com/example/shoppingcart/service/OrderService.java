@@ -39,10 +39,7 @@ public class OrderService {
 
     @Transactional
     public Order placeOrder(String userEmail, String shippingAddress, String city, String state, String zip) {
-        User user = userService.findByEmail(userEmail);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+        User user = userService.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Cart cart = cartService.getCartByUser(userEmail);
         if (cart == null || cart.getCartItems().isEmpty()) {
@@ -76,10 +73,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<Order> getOrdersByUser(String userEmail) {
-        User user = userService.findByEmail(userEmail);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+        User user = userService.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("User not found"));
         List<Order> orders = orderRepository.findByUser(user);
         orders.forEach(order -> {
             Hibernate.initialize(order.getOrderItems());

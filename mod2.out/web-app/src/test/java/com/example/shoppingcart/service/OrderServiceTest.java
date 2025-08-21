@@ -78,7 +78,7 @@ public class OrderServiceTest {
 
     @Test
     void testPlaceOrder() {
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(cartService.getCartByUser(testUser.getEmail())).thenReturn(testCart);
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
             Order order = invocation.getArgument(0);
@@ -106,7 +106,7 @@ public class OrderServiceTest {
         Order order2 = new Order(testUser, LocalDateTime.now(), 200.0, 1, "address", "city", "state", "zip");
         List<Order> orders = Arrays.asList(order1, order2);
 
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(orderRepository.findByUser(testUser)).thenReturn(orders);
 
         List<Order> resultOrders = orderService.getOrdersByUser(testUser.getEmail());

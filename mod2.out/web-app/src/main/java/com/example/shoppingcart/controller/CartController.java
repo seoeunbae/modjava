@@ -43,14 +43,14 @@ public class CartController {
     }
 
     @PostMapping("/update")
-    public String updateCartItemQuantity(@RequestParam("prodId") String prodId, @RequestParam("quantity") int quantity, Principal principal) {
+    public String updateCartItemQuantity(@RequestParam("productId") String prodId, @RequestParam("quantity") int quantity, Principal principal) {
         String userEmail = principal.getName();
         cartService.updateCartItemQuantity(userEmail, prodId, quantity);
         return "redirect:/user/cart";
     }
 
-    @PostMapping("/remove")
-    public String removeCartItem(@RequestParam("prodId") String prodId, Principal principal) {
+    @GetMapping("/remove")
+    public String removeCartItem(@RequestParam("productId") String prodId, Principal principal) {
         String userEmail = principal.getName();
         cartService.removeCartItem(userEmail, prodId);
         return "redirect:/user/cart";

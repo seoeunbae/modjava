@@ -59,7 +59,7 @@ public class CartServiceTest {
 
     @Test
     void testAddItemToCart_newCart_newProduct() {
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(productService.getProductById(testProduct.getProdId())).thenReturn(Optional.of(testProduct));
         when(cartRepository.findByUser(testUser)).thenReturn(Optional.empty());
         when(cartRepository.save(any(Cart.class))).thenReturn(testCart);
@@ -76,7 +76,7 @@ public class CartServiceTest {
 
     @Test
     void testAddItemToCart_existingCart_newProduct() {
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(productService.getProductById(testProduct.getProdId())).thenReturn(Optional.of(testProduct));
         when(cartRepository.findByUser(testUser)).thenReturn(Optional.of(testCart));
         when(cartItemRepository.findByCartAndProduct(testCart, testProduct)).thenReturn(Optional.empty());
@@ -95,7 +95,7 @@ public class CartServiceTest {
         CartItem existingCartItem = new CartItem(testCart, testProduct, 1);
         testCart.addCartItem(existingCartItem);
 
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(productService.getProductById(testProduct.getProdId())).thenReturn(Optional.of(testProduct));
         when(cartRepository.findByUser(testUser)).thenReturn(Optional.of(testCart));
         when(cartItemRepository.findByCartAndProduct(testCart, testProduct)).thenReturn(Optional.of(existingCartItem));
@@ -114,7 +114,7 @@ public class CartServiceTest {
         CartItem existingCartItem = new CartItem(testCart, testProduct, 1);
         testCart.addCartItem(existingCartItem);
 
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(productService.getProductById(testProduct.getProdId())).thenReturn(Optional.of(testProduct));
         when(cartRepository.findByUser(testUser)).thenReturn(Optional.of(testCart));
         when(cartItemRepository.findByCartAndProduct(testCart, testProduct)).thenReturn(Optional.of(existingCartItem));
@@ -132,7 +132,7 @@ public class CartServiceTest {
         CartItem existingCartItem = new CartItem(testCart, testProduct, 1);
         testCart.addCartItem(existingCartItem);
 
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(productService.getProductById(testProduct.getProdId())).thenReturn(Optional.of(testProduct));
         when(cartRepository.findByUser(testUser)).thenReturn(Optional.of(testCart));
         when(cartItemRepository.findByCartAndProduct(testCart, testProduct)).thenReturn(Optional.of(existingCartItem));
@@ -150,7 +150,7 @@ public class CartServiceTest {
         CartItem existingCartItem = new CartItem(testCart, testProduct, 1);
         testCart.addCartItem(existingCartItem);
 
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(productService.getProductById(testProduct.getProdId())).thenReturn(Optional.of(testProduct));
         when(cartRepository.findByUser(testUser)).thenReturn(Optional.of(testCart));
         when(cartItemRepository.findByCartAndProduct(testCart, testProduct)).thenReturn(Optional.of(existingCartItem));
@@ -164,7 +164,7 @@ public class CartServiceTest {
 
     @Test
     void testGetCartByUserFound() {
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(cartRepository.findByUser(testUser)).thenReturn(Optional.of(testCart));
 
         Cart resultCart = cartService.getCartByUser(testUser.getEmail());
@@ -175,7 +175,7 @@ public class CartServiceTest {
 
     @Test
     void testGetCartByUserNotFound() {
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(cartRepository.findByUser(testUser)).thenReturn(Optional.empty());
 
         Cart resultCart = cartService.getCartByUser(testUser.getEmail());
@@ -190,7 +190,7 @@ public class CartServiceTest {
         testCart.addCartItem(item1);
         testCart.addCartItem(item2);
 
-        when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        when(userService.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(cartRepository.findByUser(testUser)).thenReturn(Optional.of(testCart));
         doNothing().when(cartItemRepository).deleteAll(anySet());
         when(cartRepository.save(any(Cart.class))).thenReturn(testCart);

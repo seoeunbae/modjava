@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 import java.io.IOException;
 
@@ -50,5 +52,55 @@ public class ProductController {
         }
     }
 
-    
+    @GetMapping("/admin/products/update/{prodId}")
+    public String showUpdateProductForm(@PathVariable String prodId, Model model) {
+        productService.getProductById(prodId).ifPresent(product -> {
+            model.addAttribute("product", product);
+        });
+        return "updateProduct";
+    }
+
+    @PostMapping("/admin/products/update")
+    public String updateProduct(
+            @RequestParam("prodId") String prodId,
+            @RequestParam("prodName") String prodName,
+            @RequestParam("prodType") String prodType,
+            @RequestParam("prodInfo") String prodInfo,
+            @RequestParam("prodPrice") double prodPrice,
+            @RequestParam("prodQuantity") int prodQuantity,
+            @RequestParam("prodImage") MultipartFile prodImageFile,
+            Model model
+    ) {
+        try {
+            Product product = productService.getProductById(prodId).orElse(null);
+            if (product == null) {
+                model.addAttribute("message", "Product not found!");
+                return "redirect:/admin/products/view";
+            }
+
+            product.setProdName(prodName);
+            product.setProdType(prodType);
+            product.setProdInfo(prodInfo);
+            product.setProdPrice(prodPrice);
+            product.setProdQuantity(prodQuantity);
+
+            if (!prodImageFile.isEmpty()) {
+                byte[] prodImage = prodImageFile.getBytes();
+                product.setProdImage(prodImage);
+            }
+
+            productService.updateProduct(product);
+            return "redirect:/admin/products/view";
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("message", "Product update failed due to image processing error!");
+            return "redirect:/admin/products/update/" + prodId;
+        }
+    }
+
+    @GetMapping("/admin/products/delete/{prodId}")
+    public String deleteProduct(@PathVariable String prodId) {
+        productService.deleteProduct(prodId);
+        return "redirect:/admin/products/view";
+    }
 }

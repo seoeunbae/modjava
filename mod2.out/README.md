@@ -1,7 +1,7 @@
 # Output of modernized codes
 
 ```logs
-check git logs, local changes that are not yet committed, run an end-2-end test, and then give me a summary of what phases and sub-stages have you completed and what is pending  
+check git logs, local changes that are not yet committed, run an all tests, and then give me a summary of what phases and sub-stages have you completed and what is pending  
 ```
 
 ## Migreate Java to Spring Boot
@@ -82,6 +82,8 @@ check git logs, local changes that are not yet committed, run an end-2-end test,
 >> It's useful to check where the agent is and what is the checkpoint to resume. Without this, the agent does not know where to resume and will re-start from the begining.
 
 "this is cool! thanks for the hard work. Can you give me an update again on your progress, which phases, stages and sub-stages you have completed and what are pending?"
+
+Can you check git logs, current local code, investigate what have been completed and what are pending?
 
 To run the test independently `mvn -f mod2.out/pom.xml clean install -e`
 ```
@@ -291,4 +293,86 @@ sudo -u postgres psql
 
 || use shopping-cart/database/mysql_query.sql to initialise the database
 
+```
+
+August 21
+
+There was one point the agent tried to replace model with dataentity which are identical and faced so much deadend issues. I purposely changed it back.
+
+```logs
+ Of course. Here is a summary of the project's progress:
+
+  Completed Phases and Sub-stages:
+
+   * Phase 0: Initialization:
+       * The feature/modern-migration Git branch has been created and is in use.
+   * Phase 1: Legacy Application Analysis & Documentation:
+       * The database schema has been analyzed and documented.
+       * Core features have been identified and documented as user stories.
+       * A technical design for the new Spring Boot application has been created.
+   * Phase 2: Solution Scaffolding:
+       * The new Spring Boot multi-module project has been created and scaffolded.
+   * Phase 3: Feature Migration with Unit Tests:
+       * User authentication and management have been migrated and unit tested.
+       * Product management features (add, view) have been migrated and unit tested.
+       * Shopping cart and order management functionalities have been migrated and unit tested.
+       * The email notification service has been implemented and unit tested.
+   * Phase 4: End-to-End Verification with Integration Tests:
+       * Integration tests covering the main user and admin journeys have been implemented and
+         are passing. This includes user registration, login, adding products to the cart,
+         checkout, and admin product and order management.
+
+  Pending Sub-stages:
+
+   * Phase 3: Feature Migration with Unit Tests:
+       * Complete the implementation and unit testing for the remaining product management
+         features (update, remove, inventory control).
+       * Implement the back-in-stock email notification feature.
+   * Phase 4: End-to-End Verification with Integration Tests:
+       * Create integration tests for the remaining user journeys, such as updating and
+         removing products.
+
+  In summary, the project is in a very good state. The core functionalities have been
+  migrated and are covered by both unit and integration tests. The remaining work is to
+  complete the product management features and add the corresponding tests.
+
+
+>> [Key point] Lots of trial and errors --> can be very expensive
+Model Usage                  Reqs   Input       │
+│    Tokens  Output Tokens                          │                                 │
+│    │  ───────────────────────────────────────────────────────────────               │
+│                │                                                                    │
+│    │  gemini-2.5-pro                161     42,940,714         37,249               │
+│                │                                                                    │
+│    │  gemini-2.5-flash               55     19,544,396         19,029   
+
+Rough estimate
+
+ Based on the search results for pricing (using the lower tier for Gemini 2.5 Pro,
+  as your prompt tokens are below 200,000, and the standard Gemini 2.5 Flash
+  pricing):
+
+  Gemini 2.5 Pro:
+   * Input: $1.25 per million tokens
+   * Output: $10 per million tokens
+
+  Gemini 2.5 Flash:
+   * Input: $0.30 per million tokens
+   * Output: $2.50 per million tokens
+
+  Here's the estimated cost calculation:
+
+  Gemini 2.5 Pro:
+   * Input Cost: (42,940,714 / 1,000,000) \* $1.25 = $53.68
+   * Output Cost: (37,249 / 1,000,000) \* $10 = $0.37
+
+  Gemini 2.5 Flash:
+   * Input Cost: (19,544,396 / 1,000,000) \* $0.30 = $5.86
+   * Output Cost: (19,029 / 1,000,000) \* $2.50 = $0.05
+
+  Total Estimated Cost: $53.68 + $0.37 + $5.86 + $0.05 = $59.96
+
+>> [Prompt] modify the user authentictate test to just check the log for the successful login and not for the redirect to happen. Put a note on the test limitation and move on.
+
+>> [Key point] 
 ```

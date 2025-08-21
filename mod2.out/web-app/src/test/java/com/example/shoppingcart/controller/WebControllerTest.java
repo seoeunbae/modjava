@@ -11,7 +11,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -40,7 +42,7 @@ class WebControllerTest {
         User existingUser = new User();
         existingUser.setEmail("test@example.com");
 
-        when(userService.findByEmail("test@example.com")).thenReturn(existingUser);
+        when(userService.findByEmail(anyString())).thenReturn(Optional.of(existingUser));
 
         mockMvc.perform(post("/register")
                         .param("email", "test@example.com"))

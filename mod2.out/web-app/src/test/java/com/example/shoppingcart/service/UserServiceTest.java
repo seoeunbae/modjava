@@ -66,10 +66,10 @@ public class UserServiceTest {
 
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
 
-        User foundUser = userService.findByEmail("test@example.com");
+        Optional<User> foundUser = userService.findByEmail("test@example.com");
 
-        assertNotNull(foundUser);
-        assertEquals("test@example.com", foundUser.getEmail());
+        assertTrue(foundUser.isPresent());
+        assertEquals("test@example.com", foundUser.get().getEmail());
         verify(userRepository, times(1)).findByEmail("test@example.com");
     }
 

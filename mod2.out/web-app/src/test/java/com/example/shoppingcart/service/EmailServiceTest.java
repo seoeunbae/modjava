@@ -41,7 +41,10 @@ class EmailServiceTest {
         SimpleMailMessage sentMessage = messageCaptor.getValue();
         assertEquals("test@example.com", sentMessage.getTo()[0]);
         assertEquals("Welcome to Our Shopping Site!", sentMessage.getSubject());
-        assertEquals("Dear Test User,\n\nThank you for registering with us!", sentMessage.getText());
+        assertEquals(String.join(System.lineSeparator(), 
+                "Dear Test User", 
+                "", 
+                "Thank you for registering with us!"), sentMessage.getText());
     }
 
     @Test
@@ -62,7 +65,10 @@ class EmailServiceTest {
         SimpleMailMessage sentMessage = messageCaptor.getValue();
         assertEquals("customer@example.com", sentMessage.getTo()[0]);
         assertEquals("Your Order Confirmation", sentMessage.getSubject());
-        assertEquals("Dear Customer Name,\n\nYour order with ID 123 has been placed successfully.", sentMessage.getText());
+        assertEquals(String.join(System.lineSeparator(),
+                "Dear Customer Name",
+                "",
+                "Your order with ID 123 has been placed successfully."), sentMessage.getText());
     }
 
     @Test
@@ -83,6 +89,9 @@ class EmailServiceTest {
         SimpleMailMessage sentMessage = messageCaptor.getValue();
         assertEquals("customer@example.com", sentMessage.getTo()[0]);
         assertEquals("Your Order Has Shipped!", sentMessage.getSubject());
-        assertEquals("Dear Customer Name,\n\nYour order with ID 456 has been shipped.", sentMessage.getText());
+        assertEquals(String.join(System.lineSeparator(),
+                "Dear Customer Name",
+                "",
+                "Your order with ID 456 has been shipped."), sentMessage.getText());
     }
 }

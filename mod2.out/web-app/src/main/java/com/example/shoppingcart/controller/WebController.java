@@ -57,7 +57,7 @@ public class WebController {
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") User user, Model model) {
         // Check if user with email already exists
-        if (userService.findByEmail(user.getEmail()) != null) {
+        if (userService.findByEmail(user.getEmail()).isPresent()) {
             model.addAttribute("errorMessage", "User with this email already exists.");
             return "register";
         }
@@ -107,5 +107,27 @@ public class WebController {
         List<Order> orders = orderService.getOrdersByUser(userEmail);
         model.addAttribute("orders", orders);
         return "orders";
+    }
+
+    @GetMapping("/user/profile")
+    public String viewUserProfile(Model model, Principal principal) {
+        String userEmail = principal.getName();
+        userService.findByEmail(userEmail).ifPresent(user -> model.addAttribute("user", user));
+        return "userProfile";
+    }
+
+    @PostMapping("/user/profile")
+    public String updateUserProfile(@ModelAttribute("user") User user, Principal principal, Model model) {
+        String userEmail = principal.getName();
+        userService.findByEmail(userEmail).ifPresent(existingUser -> {
+            existingUser.setName(user.getName());
+            existingUser.setMobile(user.getMobile());
+            existingUser.setAddress(user.getAddress());
+            existingUser.setPincode(user.getPincode());
+            userService.updateUser(existingUser);
+            model.addAttribute("successMessage", "Profile updated successfully!");
+            model.addAttribute("user", existingUser);
+        });
+        return "userProfile";
     }
 }

@@ -43,7 +43,6 @@ class CartControllerTest {
         mockUser = new User();
         
         mockUser.setEmail("test@example.com");
-        when(userService.findByEmail("test@example.com")).thenReturn(mockUser);
     }
 
     @Test
@@ -68,7 +67,7 @@ class CartControllerTest {
     @Test
     @WithMockUser(username = "test@example.com")
     void updateCartItemQuantity() throws Exception {
-        mockMvc.perform(post("/user/cart/update").param("prodId", "1").param("quantity", "2").with(csrf()))
+        mockMvc.perform(post("/user/cart/update").param("productId", "1").param("quantity", "2").with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/cart"));
     }
@@ -76,7 +75,7 @@ class CartControllerTest {
     @Test
     @WithMockUser(username = "test@example.com")
     void removeCartItem() throws Exception {
-        mockMvc.perform(post("/user/cart/remove").param("prodId", "1").with(csrf()))
+        mockMvc.perform(get("/user/cart/remove").param("productId", "1").with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/cart"));
     }
