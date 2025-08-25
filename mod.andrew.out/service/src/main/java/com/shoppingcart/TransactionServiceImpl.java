@@ -24,7 +24,7 @@ public class TransactionServiceImpl implements TransactionService { // Renamed c
     private ProductRepository productRepository;
 
     @Autowired
-    private MailService mailService;
+    private EmailService emailService;
 
     @Override
     @Transactional
@@ -55,11 +55,10 @@ public class TransactionServiceImpl implements TransactionService { // Renamed c
         transaction.setOrders(orders); // Set orders list
 
         transactionRepository.save(transaction);
-        orderRepository.saveAll(orders); // Save all order items
 
         // Send transaction success email
         try {
-            mailService.sendTransactionSuccessEmail(user.getEmail(), user.getName(), transaction.getTransid(), transaction.getAmount());
+            emailService.sendTransactionSuccessEmail(user.getEmail(), user.getName(), transaction.getTransid(), transaction.getAmount());
         } catch (MessagingException e) {
             e.printStackTrace(); // Log the exception
         }
