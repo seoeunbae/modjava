@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Transaction Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container">
+        <h1 class="mt-5">Transaction Details</h1>
+        <div class="card">
+            <div class="card-header">
+                Transaction ID: <span th:text="${transaction.transid}"></span>
+            </div>
+            <div class="card-body">
+                <p><strong>Date:</strong> <span th:text="${transaction.time}"></span></p>
+                <p><strong>Status:</strong> <span th:text="${transaction.status}"></span></p>
+                <p><strong>Total Amount:</strong> <span th:text="${#numbers.formatDecimal(transaction.amount, 0, 2)}"></span></p>
+                
+                <h3>Order Items:</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="orderItem : ${transaction.orders}">
+                            <td th:text="${orderItem.product.name}"></td>
+                            <td th:text="${orderItem.amount / orderItem.quantity}"></td>
+                            <td th:text="${orderItem.quantity}"></td>
+                            <td th:text="${orderItem.amount}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

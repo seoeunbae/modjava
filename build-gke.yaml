@@ -1,0 +1,17 @@
+steps:
+# Build the application
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['clean', 'package', '-f', 'mod2.out/pom.xml', '-DskipTests']
+# Build the Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/addo-argolis-demo/shopping-cart:latest', '-f', 'web-app/Dockerfile', '.']
+  dir: 'mod2.out'
+
+# Push the Docker image to Artifact Registry
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['container', 'images', 'delete', 'gcr.io/addo-argolis-demo/shopping-cart:latest', '--force-delete-tags', '--quiet']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/addo-argolis-demo/shopping-cart:latest']
+
+images:
+- 'gcr.io/addo-argolis-demo/shopping-cart:latest'

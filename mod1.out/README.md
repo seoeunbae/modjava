@@ -59,6 +59,7 @@ sudo cp target/shopping-cart-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.w
 sudo systemctl restart tomcat
 
 sudo systemctl stop mysqld
+sudo systemctl disable mysqld
 
 # Test the app GUI, on the browser, with the newly migrated DB
 ```
@@ -68,6 +69,7 @@ sudo systemctl stop mysqld
 ```bash
 https://storage.googleapis.com/codmod-release/userguide.pdf
 
+cd mod1.out
 version=$(curl -s https://codmod-release.storage.googleapis.com/latest)
 curl -O "https://codmod-release.storage.googleapis.com/${version}/linux/amd64/codmod"
 chmod +x codmod
@@ -78,7 +80,23 @@ PROJECT_ID=addo-argolis-demo
 # check the available region https://cloud.google.com/vertex-ai/generative-ai/docs/learn/locations#united-states
 REGION=us-central1
 ./codmod config set region $REGION
-./codmod create -c ./shopping-cart/ -o ./mod1.out/modjava_codmod.html
+./codmod create -c ../shopping-cart/ -o modjava_codmod.html
+./codmod create -c ../shopping-cart/ -o modjava_codmod_JAVA_LEGACY_TO_MODERN.html --intent JAVA_LEGACY_TO_MODERN
+./codmod create --estimate-cost -c ../shopping-cart
+# ducdo@modjava:~/workspace/modjava/mod1.out
+# $ ./codmod create --estimate-cost -c ../shopping-cart
+# Starting to load files from directory ../shopping-cart
+# Completed loading 116 files from directory ../shopping-cart
+# Estimating cost for current command. This may take a few minutes...
+# Counting tokens in files
+#  0 / 116 [------------------------------------------------------------------------------------------------------------]   0.00%File over byte limit (1 MiB), truncating contents file=databases/mysql_query.sql bytes=1267745
+#  116 / 116 [=======================================================================================================] 100.00% 2s
+# Summarizing Code Batches
+#  36 / 36 [=========================================================================================================] 100.00% 4s
+# Generating Report Sections
+#  12 / 12 [=========================================================================================================] 100.00% 3s
+# Estimated total cost: 60.00 USD
+
 ```
 
 ## TODO

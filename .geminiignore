@@ -1,11 +1,1 @@
 mcdc
-mcdc-collect-modjava-2025-08-08-14-48.tar
-mcdc-linux-collect.sh
-shopping-cart/target
-*.tar
-*.war
-*.mwb
-.git
-worktrees
-mod1.out
-mod2.out

@@ -1,0 +1,25 @@
+steps:
+# Build the Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/<YOUR-GCP-PROJECT-ID>/shopping-cart:latest', '.']
+  dir: 'mod2.out'
+
+# Push the Docker image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/<YOUR-GCP-PROJECT-ID>/shopping-cart:latest']
+
+# Deploy to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: [
+    'run', 'deploy', 'shopping-cart-backend',
+    '--image', 'gcr.io/<YOUR-GCP-PROJECT-ID>/shopping-cart:latest',
+    '--region', '<YOUR-GCP-REGION>',
+    '--platform', 'managed',
+    '--allow-unauthenticated',
+    '--set-env-vars', 'SPRING_PROFILES_ACTIVE=gcp',
+    '--set-secrets=SPRING_DATASOURCE_USERNAME=cloud-sql-credentials:latest,SPRING_DATASOURCE_PASSWORD=cloud-sql-credentials:latest'
+  ]
+
+images:
+- 'gcr.io/<YOUR-GCP-PROJECT-ID>/shopping-cart:latest'
