@@ -202,6 +202,12 @@ analyze the test method testProductManagement() and the relevant HTML
 
 ╭───────────────────────────────────────────────────────────────────────────────╮
 │  > add a menu link to go to that page if the user is logged in as admin role 
+/p
+can you add tests for the recent fixes? It's bad not having those tests to   │
+│    start with   
+/p
+evert UI tests, it's too hard for you. Keep and implement more page           │
+│   routing tests.  
 ```
 
 # Limitations
@@ -223,6 +229,8 @@ The most significant concern is the change in the orders table's primary key. Th
 1. For some reasons, the agent generated Category.java which was not there in the legacy code.
 1. The first few runs, the new app didn't route user to the login page upon adding the product to the cart. Obviously, the feature "redirect the user to the login page if the user is not yet logged in, when the user adds a product to the cart" was not there. The generated feature files should be reviewed carefully and specify fully before implementing.
 1. For cost optimisation, maybe it's a good strategy to avoid asking the agent to run test, check for errors and fix those, since the test logs can be huge. We can run the test separately, then copy/paste the error back to the agent. Once manual test past, ask the agent to run full test.
+1. The agent is obviously not great at CSS and GUI tests
+
 ```
                                        
 # Logs
