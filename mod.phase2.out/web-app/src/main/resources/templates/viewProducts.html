@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Products</title>
+</head>
+<body>
+    <h1>View Products</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Info</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.prodId}"></td>
+                <td th:text="${product.prodName}"></td>
+                <td th:text="${product.prodType}"></td>
+                <td th:text="${product.prodInfo}"></td>
+                <td th:text="${product.prodPrice}"></td>
+                <td th:text="${product.prodQuantity}"></td>
+                <td>
+                    <a th:href="@{/admin/products/update/{prodId}(prodId=${product.prodId})}">Update</a>
+                    <a th:href="@{/admin/products/delete/{prodId}(prodId=${product.prodId})}">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
