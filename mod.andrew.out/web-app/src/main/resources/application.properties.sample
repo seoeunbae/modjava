@@ -1,6 +1,6 @@
 spring.datasource.url=jdbc:postgresql://localhost:5432/shoppingcart
 spring.datasource.username=postgres
-spring.datasource.password=date59com
+spring.datasource.password=YOUR_DB_PASSWORD
 spring.datasource.driver-class-name=org.postgresql.Driver
 spring.jpa.hibernate.ddl-auto=none
 spring.sql.init.mode=always
@@ -9,8 +9,8 @@ server.port=8081
 # Mail Server Properties
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
-spring.mail.username=your-email@gmail.com # REPLACE WITH YOUR GMAIL
-spring.mail.password=your-gmail-password # REPLACE WITH YOUR GMAIL APP PASSWORD
+spring.mail.username=YOUR_EMAIL_USERNAME
+spring.mail.password=YOUR_APP_PASSWORD
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 spring.mail.properties.mail.smtp.starttls.required=true
