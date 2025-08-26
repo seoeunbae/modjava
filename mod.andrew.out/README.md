@@ -176,6 +176,11 @@ please update the password in data.sql to use BCrypt instead of the old        �
 │   the same password values, but encrypt it while saving to the database.
 /p
 mark that add product test as a technical debt, then run a test
+/p
+migrate UserAuthenticationIT.java from integration-tests to web-app
+/p
+validate UserAuthenticationIT.java by comparing it to ShoppingCartIT.java   │
+│    which passed all the tests
 ```
 
 # Limitations
