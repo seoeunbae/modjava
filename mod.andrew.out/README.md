@@ -267,7 +267,6 @@ sudo netstat -tulnp | grep 8081
  kill -9 <PID>
 
 mvn test -f mod.andrew.out/web-app/pom.xml
-
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run &
 
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run > mod.andrew.out/web-app/app.log 2>&1 &
