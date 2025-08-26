@@ -7,8 +7,22 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
+
 @Configuration
+@Profile("!test")
 public class MailConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(MailConfig.class);
+
+    @Value("${spring.mail.username}")
+    private String username;
+
+    @Value("${spring.mail.password}")
+    private String password;
 
     @Bean
     public JavaMailSender getJavaMailSender() {
@@ -16,8 +30,11 @@ public class MailConfig {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("andrew.addo@gmail.com");
-        mailSender.setPassword("REPALCE_WITH_YOUR_APP_PASSWORD"); // TODO: change the approach to avoid hard coded values
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
+
+        logger.info("Mail sender username: {}", username);
+        logger.info("Mail sender password: {}", password); // WARNING: Do not log passwords in production!
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

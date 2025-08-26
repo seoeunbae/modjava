@@ -35,6 +35,7 @@ public class SecurityConfig {
             )
             .logout(logout ->
                 logout
+                    .logoutSuccessUrl("/") // Redirect to home page
                     .permitAll()
             )
             ; // Temporarily disable CSRF for easier testing, enable in production

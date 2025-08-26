@@ -9,31 +9,28 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-
 
 import java.time.Duration;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.springframework.test.context.ActiveProfiles;
-
-@Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ShoppingCartApplication.class)
+@Testcontainers
 @ActiveProfiles("test")
-class ShoppingCartIT {
+public class ShoppingCartAndOrderProcessingIT {
 
     @LocalServerPort
     private int port;
@@ -43,10 +40,8 @@ class ShoppingCartIT {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ProductRepository productRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -70,7 +65,7 @@ class ShoppingCartIT {
         driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        // Create a user
+        // Setup test user and product (similar to ShoppingCartIT)
         User user = new User();
         user.setEmail("user@test.com");
         user.setPassword(passwordEncoder.encode("password"));
@@ -80,7 +75,6 @@ class ShoppingCartIT {
         user.setPincode(12345);
         userRepository.save(user);
 
-        // Create a product
         Product product = new Product();
         product.setPid("P001");
         product.setName("Test Camera");
@@ -98,46 +92,54 @@ class ShoppingCartIT {
     }
 
     @Test
-    void testAddToCartAndCheckout() {
-        // Login
+    void testShoppingCartAndOrderProcessing() {
+        // User Login
         driver.get("http://localhost:" + port + "/login");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         driver.findElement(By.id("username")).sendKeys("user@test.com");
         driver.findElement(By.id("password")).sendKeys("password");
-        driver.findElement(By.cssSelector("button[type='submit']")).click();
-
-        // Wait for the "Add to Cart" button to be visible, which indicates login is complete and products are displayed.
-        WebElement addToCartButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//form[@action='/cart/add/P001']/button")));
+        driver.findElement(By.xpath("//button[text()='Login']")).click();
+        wait.until(ExpectedConditions.urlContains("/"));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Logout']"))); // Ensure logged in
 
         // Add product to cart
-        addToCartButton.click();
-        
-        // Go to cart
-        driver.get("http://localhost:" + port + "/cart");
+        driver.get("http://localhost:" + port + "/product-details/P001");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Add to Cart']")));
+        driver.findElement(By.xpath("//button[text()='Add to Cart']")).click();
+        wait.until(ExpectedConditions.urlContains("/cart"));
+        // Assert product is in cart by checking its name
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[text()='Test Camera']")));
 
-        // Verify product is in cart
-        WebElement productName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[text()='Test Camera']")));
-        assertEquals("Test Camera", productName.getText());
+        // Removed "Update cart quantity" section as UI does not support it
+
+        // Remove product from cart
+        // Navigate to cart page explicitly if not already there
+        driver.get("http://localhost:" + port + "/cart");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[text()='Remove']")));
+        driver.findElement(By.xpath("//a[text()='Remove']")).click();
+        wait.until(ExpectedConditions.urlContains("/cart"));
+        // Assert product is removed from cart
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//td[text()='Test Camera']")));
+        assertTrue(driver.getPageSource().contains("Your cart is empty!"));
+
+        // Add product to cart again for checkout
+        driver.get("http://localhost:" + port + "/product-details/P001");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Add to Cart']")));
+        driver.findElement(By.xpath("//button[text()='Add to Cart']")).click();
+        wait.until(ExpectedConditions.urlContains("/cart"));
 
         // Proceed to checkout
-        driver.get("http://localhost:" + port + "/checkout");
-
-        // Wait for the payment page to load
+        driver.get("http://localhost:" + port + "/cart");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[text()='Checkout']")));
+        driver.findElement(By.xpath("//a[text()='Checkout']")).click();
         wait.until(ExpectedConditions.urlContains("/checkout"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[text()='Credit Card Payment']")));
+        assertTrue(driver.getPageSource().contains("Credit Card Payment"));
 
+        // Place order
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[contains(text(),'Pay')]")));
         driver.findElement(By.xpath("//button[contains(text(),'Pay')]")).click();
         wait.until(ExpectedConditions.urlContains("/orders"));
         // Assert order is placed by checking for transaction table or a success message on orders page
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[text()='My Transactions']")));
-        
-        // On payment page, click "Pay Now"
-        // wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']"))).click();
-        
-        // // Verify order is placed and cart is empty
-        // wait.until(ExpectedConditions.urlContains("/orders"));  
-        // driver.get("http://localhost:" + port + "/cart");
-        
-        // WebElement emptyCartMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h3[text()='Your cart is empty!']")));
-        // assertTrue(emptyCartMessage.isDisplayed());
     }
 }

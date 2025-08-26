@@ -32,7 +32,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ShoppingCartApplication.class)
 @ActiveProfiles("test")
-@Disabled
+
 class ProductManagementIT {
 
     @LocalServerPort
@@ -89,7 +89,7 @@ class ProductManagementIT {
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username"))).sendKeys("admin@test.com");
         driver.findElement(By.id("password")).sendKeys("password");
-        driver.findElement(By.cssSelector("button[type='submit']")).click();
+        driver.findElement(By.xpath("//button[text()='Login']")).click();
 
         wait.until(ExpectedConditions.urlContains("/admin/products"));
 
@@ -114,11 +114,11 @@ class ProductManagementIT {
 
         
 
-        driver.findElement(By.cssSelector("button[type='submit']")).click();
+        driver.findElement(By.xpath("//button[text()='Add Product']")).click();
 
         wait.until(ExpectedConditions.urlContains("/admin/products"));
 
-        WebElement productLink = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[text()='Test Product']")));
-        assertEquals("Test Product", productLink.getText());
+        WebElement productNameCell = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[text()='Test Product']")));
+        assertEquals("Test Product", productNameCell.getText());
     }
 }

@@ -1,6 +1,7 @@
 # Milestone
 
 Aug 24 2pm: cart works
+Aug 26 9:40pm: logout works, payment works
 
 # Prompts
 
@@ -176,6 +177,37 @@ please update the password in data.sql to use BCrypt instead of the old        �
 │   the same password values, but encrypt it while saving to the database.
 /p
 mark that add product test as a technical debt, then run a test
+/p
+migrate UserAuthenticationIT.java from integration-tests to web-app
+/p
+validate UserAuthenticationIT.java by comparing it to ShoppingCartIT.java   │
+│    which passed all the tests
+/p
+do you have test for the logout function ? if not, implement it
+/p
+/funny
+analyze the test method testProductManagement() and the relevant HTML
+  templates to identify and fix any incorrect locators or assertions.
+  I've reviewed fragments/header.html.
+
+  There are no explicit navigation links for admin-specific pages like
+  /admin/products in the header. The links available are for "Products", "Cart",
+  "Orders", and "Profile" when authenticated.
+
+  Therefore, after logging in as admin@test.com, you will be redirected to the home
+  page (/). From there, you will need to manually navigate to the admin products
+  page by typing the URL directly in your browser:
+
+  http://localhost:8080/admin/products (or your application's port).
+
+╭───────────────────────────────────────────────────────────────────────────────╮
+│  > add a menu link to go to that page if the user is logged in as admin role 
+/p
+can you add tests for the recent fixes? It's bad not having those tests to   │
+│    start with   
+/p
+evert UI tests, it's too hard for you. Keep and implement more page           │
+│   routing tests.  
 ```
 
 # Limitations
@@ -197,6 +229,8 @@ The most significant concern is the change in the orders table's primary key. Th
 1. For some reasons, the agent generated Category.java which was not there in the legacy code.
 1. The first few runs, the new app didn't route user to the login page upon adding the product to the cart. Obviously, the feature "redirect the user to the login page if the user is not yet logged in, when the user adds a product to the cart" was not there. The generated feature files should be reviewed carefully and specify fully before implementing.
 1. For cost optimisation, maybe it's a good strategy to avoid asking the agent to run test, check for errors and fix those, since the test logs can be huge. We can run the test separately, then copy/paste the error back to the agent. Once manual test past, ask the agent to run full test.
+1. The agent is obviously not great at CSS and GUI tests
+1. Flash is not even close yet for this task!
 ```
                                        
 # Logs
@@ -232,6 +266,7 @@ sudo lsof -i :8081
 sudo netstat -tulnp | grep 8081
  kill -9 <PID>
 
+mvn test -f mod.andrew.out/web-app/pom.xml
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run &
 
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run > mod.andrew.out/web-app/app.log 2>&1 &
