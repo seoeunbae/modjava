@@ -230,7 +230,7 @@ The most significant concern is the change in the orders table's primary key. Th
 1. The first few runs, the new app didn't route user to the login page upon adding the product to the cart. Obviously, the feature "redirect the user to the login page if the user is not yet logged in, when the user adds a product to the cart" was not there. The generated feature files should be reviewed carefully and specify fully before implementing.
 1. For cost optimisation, maybe it's a good strategy to avoid asking the agent to run test, check for errors and fix those, since the test logs can be huge. We can run the test separately, then copy/paste the error back to the agent. Once manual test past, ask the agent to run full test.
 1. The agent is obviously not great at CSS and GUI tests
-
+1. Flash is not even close yet for this task!
 ```
                                        
 # Logs
