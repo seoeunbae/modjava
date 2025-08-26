@@ -185,8 +185,23 @@ validate UserAuthenticationIT.java by comparing it to ShoppingCartIT.java   │
 /p
 do you have test for the logout function ? if not, implement it
 /p
+/funny
 analyze the test method testProductManagement() and the relevant HTML
   templates to identify and fix any incorrect locators or assertions.
+  I've reviewed fragments/header.html.
+
+  There are no explicit navigation links for admin-specific pages like
+  /admin/products in the header. The links available are for "Products", "Cart",
+  "Orders", and "Profile" when authenticated.
+
+  Therefore, after logging in as admin@test.com, you will be redirected to the home
+  page (/). From there, you will need to manually navigate to the admin products
+  page by typing the URL directly in your browser:
+
+  http://localhost:8080/admin/products (or your application's port).
+
+╭───────────────────────────────────────────────────────────────────────────────╮
+│  > add a menu link to go to that page if the user is logged in as admin role 
 ```
 
 # Limitations
