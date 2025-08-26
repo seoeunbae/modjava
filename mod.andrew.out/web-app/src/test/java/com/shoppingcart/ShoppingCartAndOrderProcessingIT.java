@@ -100,7 +100,7 @@ public class ShoppingCartAndOrderProcessingIT {
         driver.findElement(By.id("password")).sendKeys("password");
         driver.findElement(By.xpath("//button[text()='Login']")).click();
         wait.until(ExpectedConditions.urlContains("/"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Logout")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Logout']"))); // Ensure logged in
 
         // Add product to cart
         driver.get("http://localhost:" + port + "/product-details/P001");

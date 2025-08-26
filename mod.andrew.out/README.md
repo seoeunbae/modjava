@@ -181,6 +181,8 @@ migrate UserAuthenticationIT.java from integration-tests to web-app
 /p
 validate UserAuthenticationIT.java by comparing it to ShoppingCartIT.java   │
 │    which passed all the tests
+/p
+do you have test for the logout function ? if not, implement it
 ```
 
 # Limitations
@@ -236,6 +238,8 @@ mvn -f mod.andrew.out/pom.xml clean install
 sudo lsof -i :8081
 sudo netstat -tulnp | grep 8081
  kill -9 <PID>
+
+mvn test -f mod.andrew.out/web-app/pom.xml
 
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run &
 

@@ -86,6 +86,30 @@ public class UserAuthenticationIT {
         // Verify successful login and redirection to root URL
         wait.until(ExpectedConditions.urlContains("/"));
         // Verify presence of Logout link, indicating successful authentication
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Logout")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Logout']")));
+    }
+
+    @Test
+    void testUserLogout() {
+        // First, log in a user
+        driver.get("http://localhost:" + port + "/login");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
+        driver.findElement(By.id("username")).sendKeys("test@example.com");
+        driver.findElement(By.id("password")).sendKeys("password");
+        driver.findElement(By.xpath("//button[text()='Login']")).click();
+        wait.until(ExpectedConditions.urlContains("/"));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Logout']"))); // Ensure logged in
+
+        // Now, click the Logout link
+        driver.findElement(By.xpath("//button[text()='Logout']")).click();
+
+        // Assert successful logout:
+        // 1. Should be redirected to the login page or root
+        wait.until(ExpectedConditions.urlContains("/")); // Redirect to home page
+        // 2. Logout link should become invisible
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Logout")));
+
+        // 3. Login link should be visible again
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Login")));
     }
 }
