@@ -1,6 +1,7 @@
 # Milestone
 
 Aug 24 2pm: cart works
+Aug 26 9:40pm: logout works, payment works
 
 # Prompts
 
@@ -183,6 +184,9 @@ validate UserAuthenticationIT.java by comparing it to ShoppingCartIT.java   │
 │    which passed all the tests
 /p
 do you have test for the logout function ? if not, implement it
+/p
+analyze the test method testProductManagement() and the relevant HTML
+  templates to identify and fix any incorrect locators or assertions.
 ```
 
 # Limitations
