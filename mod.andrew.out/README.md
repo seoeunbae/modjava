@@ -36,7 +36,7 @@ the original shopping-cart allows the user to access the default products page w
 │   required for cart and payment, etc. You are supposed to stay true to the original legacy app logics.                            
 /p
 user the database schema and script in the legacy shopping-cart folder to create necessary tables and data for the manual       │
-│   test. Convert to postgresql if needed. Save the new schema and data.sql in the same folder mod.andrew.out. DO NOT INCLUDE       │
+│   test. Convert to postgresql if needed. Save the new schema and data.sql in the same folder mod.phase3.out. DO NOT INCLUDE       │
 │   these in the unit or integration test. 
 /p
 please check logs for error, restart the local web-app so I can contiously test it
@@ -57,13 +57,13 @@ update the code to the recent change to image from binary to now a url to the im
 why is there category_id in the product table? check the legacy code in shopping-cart if this field is there. Then WAIT         │
 │   for my instruction to proceed
 /p
-does category existing in the legacy code shopping-cart ? why is it in the new code mod.andrew.out ?
+does category existing in the legacy code shopping-cart ? why is it in the new code mod.phase3.out ?
 /p
-does category existing in the legacy code shopping-cart ? why is it in the new code mod.andrew.out ? Ignore the generated       │
+does category existing in the legacy code shopping-cart ? why is it in the new code mod.phase3.out ? Ignore the generated       │
 │   code in mod2.out and mod3.out. Use the legacy code shopping-cart as a base of truth. You should not implement new logics        │
 │   unless is told to do so.
 /p
-step back, scan the code in mod.andrew.out, there are few warnings and errors in the code notified by my ide
+step back, scan the code in mod.phase3.out, there are few warnings and errors in the code notified by my ide
 /p
 no, category_id is not even in the log!!! I checked and there is no tables in the shoppingcart database. Did you implement the   │
 │    schema.sql and data.sql to this database ?  
@@ -119,7 +119,7 @@ change the plan, test with local postgresql server instead of the Cloud SQL. Mak
 it's pointless (or hopeless) to expect the agent to be able to get it right the first time. Small steps. Test the app locally first!
 /p
 you just finished the code migration. Now it's the testing phase. Roger ?
-run the test locally, with the code not the built jar, check and kill if the previous process is still running on port 8081, output the logs to mod.andrew.out/web-app/app.log, and clean up app.log for each run, continue monitor the app.log for errors. If there is error, stop the web-app process, fix the error, then repeat.
+run the test locally, with the code not the built jar, check and kill if the previous process is still running on port 8081, output the logs to mod.phase3.out/web-app/app.log, and clean up app.log for each run, continue monitor the app.log for errors. If there is error, stop the web-app process, fix the error, then repeat.
 p/
 can you check the profile page, I had error going to /profile 
 /p
@@ -260,21 +260,21 @@ sudo systemctl stop postgresql
 sudo systemctl disable postgresql
 sudo systemctl status postgresql
 
-mvn -f mod.andrew.out/pom.xml clean install
+mvn -f mod.phase3.out/pom.xml clean install
 
 sudo lsof -i :8081
 sudo netstat -tulnp | grep 8081
  kill -9 <PID>
 
-mvn test -f mod.andrew.out/web-app/pom.xml
-mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run &
+mvn test -f mod.phase3.out/web-app/pom.xml
+mvn -f mod.phase3.out/web-app/pom.xml spring-boot:run &
 
-mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run > mod.andrew.out/web-app/app.log 2>&1 &
+mvn -f mod.phase3.out/web-app/pom.xml spring-boot:run > mod.phase3.out/web-app/app.log 2>&1 &
 
 gsutil iam ch serviceAccount:p827859227929-dtoer1@gcp-sa-cloud-sql.iam.gserviceaccount.com:objectCreator gs://addo-modjava
 
-psql -U postgres -d shoppingcart -f mod.andrew.out/web-app/src/main/resources/schema.sql
-psql -U postgres -d shoppingcart -f mod.andrew.out/web-app/src/main/resources/data.sql
+psql -U postgres -d shoppingcart -f mod.phase3.out/web-app/src/main/resources/schema.sql
+psql -U postgres -d shoppingcart -f mod.phase3.out/web-app/src/main/resources/data.sql
 
 Facing Gemini CLI ratelimit issue
 https://github.com/google-gemini/gemini-cli/issues/1502
