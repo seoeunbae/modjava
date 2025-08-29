@@ -1,4 +1,4 @@
-# modjava
+# Steps to deploy the app locally
 
 ## Set up the legacy app
 ```log
