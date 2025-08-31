@@ -105,17 +105,19 @@ class ProductServiceImplTest {
         Product product1 = new Product();
         product1.setPid("1");
         product1.setName("Test Product 1");
+        product1.setInfo("Some info");
         Product product2 = new Product();
         product2.setPid("2");
         product2.setName("Another Product");
+        product2.setInfo("Some other info");
 
-        when(productRepository.findByNameContainingIgnoreCase("test")).thenReturn(Arrays.asList(product1));
+        when(productRepository.searchProducts("test")).thenReturn(Arrays.asList(product1));
 
         List<Product> products = productService.searchProducts("test");
 
         assertEquals(1, products.size());
         assertEquals("Test Product 1", products.get(0).getName());
-        verify(productRepository, times(1)).findByNameContainingIgnoreCase("test");
+        verify(productRepository, times(1)).searchProducts("test");
     }
 
     @Test

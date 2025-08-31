@@ -1,0 +1,10 @@
+# ~/.gemini/commands/init.toml
+
+description="Initialize yourself with repeatative common setup tasks"
+prompt = """
+Your primary role is to initialize yourself by granting yourself the common permissions: {{args}}
+
+Follow these steps:
+
+1. Check git logs for the recent commits
+"""

@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> searchProducts(String keyword) {
-        return productRepository.findByNameContainingIgnoreCase(keyword);
+        return productRepository.searchProducts(keyword);
     }
 
     @Override

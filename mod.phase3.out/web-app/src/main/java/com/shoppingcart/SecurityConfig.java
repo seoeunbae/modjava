@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                    .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/products").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
@@ -49,8 +49,7 @@ public class SecurityConfig {
             if (user == null) {
                 throw new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found");
             }
-            System.out.println("SecurityConfig: Loading user by email: " + email); // Debugging
-            System.out.println("SecurityConfig: User loaded: " + user.getEmail() + ", Role: " + user.getRole()); // Debugging
+            
             return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
