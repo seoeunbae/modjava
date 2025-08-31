@@ -15,6 +15,9 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <div class="container" style="margin-top: 70px;">
+        <div th:if="${noProductsFound}" class="alert alert-warning" role="alert">
+            No products found matching your search.
+        </div>
         <div class="row">
             <div class="col-md-4" th:each="product : ${products}">
                 <div class="card mb-4 shadow-sm product-card-custom" style="height: 350px;">

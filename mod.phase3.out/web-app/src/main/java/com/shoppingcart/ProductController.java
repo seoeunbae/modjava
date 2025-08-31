@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
@@ -37,8 +38,15 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String viewProductsPage(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
+    public String viewProductsPage(Model model, @RequestParam(name = "search", required = false) String keyword) {
+        List<Product> products;
+        if (keyword != null && !keyword.isEmpty()) {
+            products = productService.searchProducts(keyword);
+            model.addAttribute("noProductsFound", products.isEmpty());
+        } else {
+            products = productService.getAllProducts();
+        }
+        model.addAttribute("products", products);
         return "index";
     }
 

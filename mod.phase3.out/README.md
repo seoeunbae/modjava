@@ -7,8 +7,12 @@ Aug 31 : starting with BMAD to implement / enhance the search function
 # Prompts
 
 ```logs
+/p
+@architect please review the generated materials, if it is ok, proceed         │
+│   with develeper role to implement the shopping-cart-search feature in           │
+│   mod.phase3.out/features/shopping-cart-search/prd.md         
 /p BMAD
-Start with PM (to generate PRD), then Architect (to generate TDD, docs), then Dev (James)
+Start with PM (to generate PRD), then Architect (Winston) (to generate TDD, docs), then Dev (James)
 /p
 check git logs, local changes that are not yet committed, run an end-2-end test, and then give me a summary of what phases and sub-stages have you completed and what is pending. Please wait for my instructions before proceeding.
 /p 
