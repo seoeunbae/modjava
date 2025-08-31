@@ -2,10 +2,13 @@
 
 Aug 24 2pm: cart works
 Aug 26 9:40pm: logout works, payment works
+Aug 31 : starting with BMAD to implement / enhance the search function
 
 # Prompts
 
 ```logs
+/p BMAD
+Start with PM (to generate PRD), then Architect (to generate TDD, docs), then Dev (James)
 /p
 check git logs, local changes that are not yet committed, run an end-2-end test, and then give me a summary of what phases and sub-stages have you completed and what is pending. Please wait for my instructions before proceeding.
 /p 
@@ -220,6 +223,7 @@ The most significant concern is the change in the orders table's primary key. Th
 # Points
 
 ```logs
+1. BMAD is promising. It's still pretty tricky to resume from an interupted session. 
 1. Certain tests were proven to be complex and expensive for the agent to resolve. For examples, GUI redirection tests, which has different delay depending on the underlying logics and gui components. It's logically to mark those tests as limitations and move on instead of pushing the agent.
 1. The agent does not have the memory of the previous solutions, or might not have the ability to search widely for alternate solutions. For example, the issue with chromedirver in selenium tests. I would attempt to point it to specific solution as a reference to assist with the current problems. This has been proven to be able to unblock the agent.
 1. Avoid asking the agent to leepfrog or complete 5 steps in one as it will face issues that it won't be able to get out off. Try to guide it in smaller step.
