@@ -71,6 +71,11 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google.genai</groupId>
+            <artifactId>google-genai</artifactId>
+            <version>1.16.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>postgres-socket-factory</artifactId>
             <version>1.10.0</version> <!-- Use the latest stable version -->
@@ -107,9 +112,9 @@
                             <goal>verify</goal>
                         </goals>
                         <configuration>
-                            <excludes>
-                                <exclude>**/*IT.java</exclude>
-                            </excludes>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
                         </configuration>
                     </execution>
                 </executions>

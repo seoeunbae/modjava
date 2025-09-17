@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.mail.MessagingException;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -18,6 +20,12 @@ class ProductServiceImplTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private EmailService emailService;
+
+    @Mock
+    private DemandService demandService;
 
     
 
@@ -140,5 +148,43 @@ class ProductServiceImplTest {
         Product result = productService.getProductById("1");
 
         assertNull(result);
+    }
+
+    @Test
+    void testUpdateProduct_backInStockNotification() throws MessagingException {
+        // Given
+        Product existingProduct = new Product();
+        existingProduct.setPid("1");
+        existingProduct.setName("Old Name");
+        existingProduct.setInfo("Old Info");
+        existingProduct.setPrice(5.0);
+        existingProduct.setQuantity(0);
+
+        Product updatedProduct = new Product();
+        updatedProduct.setPid("1");
+        updatedProduct.setName("New Name");
+        updatedProduct.setInfo("New Info");
+        updatedProduct.setPrice(15.0);
+        updatedProduct.setQuantity(15);
+
+        User user = new User();
+        user.setEmail("test@test.com");
+        user.setName("Test User");
+
+        Demand demand = new Demand();
+        demand.setUser(user);
+
+        List<Demand> demands = Arrays.asList(demand);
+
+        when(productRepository.findById("1")).thenReturn(Optional.of(existingProduct));
+        when(productRepository.save(any(Product.class))).thenReturn(updatedProduct);
+        when(demandService.getDemandsByProdid("1")).thenReturn(demands);
+
+        // When
+        productService.updateProduct("1", updatedProduct);
+
+        // Then
+        verify(emailService).sendProductAvailableEmail(anyString(), anyString(), anyString(), anyString());
+        verify(demandService).deleteDemands(demands);
     }
 }
